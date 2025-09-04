@@ -5,7 +5,7 @@
   import TaskCard from '$lib/components/TaskCard.svelte';
   import ScheduleElement from '$lib/components/ScheduleElement.svelte';
   import CalendarPicker from '$lib/components/CalendarPicker.svelte';
-  import { createDropZone, handleDragOver, handleDragEnter, handleDragLeave, handleDrop, getNeuroTypeDragBehavior } from '$lib/drag-drop.ts';
+  import { createDropZone, handleDragOver, handleDragEnter, handleDragLeave, handleDrop, getNeuroTypeDragBehavior } from '$lib/drag-drop';
   
   let currentDate = new Date();
   let scheduleElements: any[] = [];
