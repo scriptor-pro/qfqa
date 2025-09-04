@@ -1,0 +1,197 @@
+:root {
+  /* Muted tones - Light theme */
+  --color-primary: #6b7280;
+  --color-secondary: #9ca3af;
+  --color-accent: #059669;
+  --color-background: #f9fafb;
+  --color-surface: #ffffff;
+  --color-text: #374151;
+  --color-text-muted: #6b7280;
+  --color-border: #d1d5db;
+  --color-error: #dc2626;
+  --color-success: #059669;
+  --color-warning: #d97706;
+  
+  /* Energy level colors (1-12 scale) */
+  --energy-1: #fef2f2;
+  --energy-2: #fecaca;
+  --energy-3: #fca5a5;
+  --energy-4: #f87171;
+  --energy-5: #ef4444;
+  --energy-6: #dc2626;
+  --energy-7: #fbbf24;
+  --energy-8: #f59e0b;
+  --energy-9: #d97706;
+  --energy-10: #a3e635;
+  --energy-11: #84cc16;
+  --energy-12: #65a30d;
+  
+  /* Typography */
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Liberation Sans', sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  
+  /* Spacing */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  
+  /* Reduced motion */
+  --transition: none;
+  --transform-scale: none;
+}
+
+[data-theme="dark"] {
+  /* Muted tones - Dark theme */
+  --color-primary: #9ca3af;
+  --color-secondary: #6b7280;
+  --color-accent: #10b981;
+  --color-background: #111827;
+  --color-surface: #1f2937;
+  --color-text: #f3f4f6;
+  --color-text-muted: #9ca3af;
+  --color-border: #374151;
+  --color-error: #ef4444;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  
+  /* Dark energy colors */
+  --energy-1: #1f2937;
+  --energy-2: #374151;
+  --energy-3: #4b5563;
+  --energy-4: #6b7280;
+  --energy-5: #9ca3af;
+  --energy-6: #d1d5db;
+  --energy-7: #451a03;
+  --energy-8: #78350f;
+  --energy-9: #92400e;
+  --energy-10: #365314;
+  --energy-11: #4d7c0f;
+  --energy-12: #65a30d;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  color: var(--color-text);
+  background-color: var(--color-background);
+  transition: var(--transition);
+}
+
+/* Bauhaus principles: function-first, minimal decoration */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  margin-bottom: var(--spacing-4);
+}
+
+h1 { font-size: var(--font-size-2xl); }
+h2 { font-size: var(--font-size-xl); }
+h3 { font-size: var(--font-size-lg); }
+
+button {
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: var(--spacing-3) var(--spacing-4);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+button:hover {
+  background: var(--color-primary);
+  color: var(--color-surface);
+}
+
+button:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+button.primary {
+  background: var(--color-accent);
+  color: white;
+  border-color: var(--color-accent);
+}
+
+input, textarea, select {
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: var(--spacing-3);
+  background: var(--color-surface);
+  color: var(--color-text);
+  width: 100%;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-color: var(--color-accent);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Energy level visual scale */
+.energy-indicator {
+  width: 100%;
+  height: var(--spacing-4);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+
+.energy-1 { background: var(--energy-1); height: 10%; }
+.energy-2 { background: var(--energy-2); height: 15%; }
+.energy-3 { background: var(--energy-3); height: 20%; }
+.energy-4 { background: var(--energy-4); height: 25%; }
+.energy-5 { background: var(--energy-5); height: 35%; }
+.energy-6 { background: var(--energy-6); height: 45%; }
+.energy-7 { background: var(--energy-7); height: 55%; }
+.energy-8 { background: var(--energy-8); height: 65%; }
+.energy-9 { background: var(--energy-9); height: 75%; }
+.energy-10 { background: var(--energy-10); height: 85%; }
+.energy-11 { background: var(--energy-11); height: 95%; }
+.energy-12 { background: var(--energy-12); height: 100%; }
+
+/* Responsive design */
+@media (max-width: 768px) {
+  body {
+    font-size: var(--font-size-sm);
+  }
+  
+  button, input, textarea, select {
+    padding: var(--spacing-4);
+    font-size: var(--font-size-base);
+  }
+}

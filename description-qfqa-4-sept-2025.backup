@@ -1,0 +1,70 @@
+# QFQA - web app d'emploi du temps pour TDAH, autiste ou les deux
+
+QFQA (Quoi Faire Quand Aujourd'hui) est une web app.
+
+- web app destinée aux personnes TDAH, autiste ou les deux
+- web app qui leur propose l'emploi du temps le mieux adapté à leur neurotype et leur quantité d'énergie
+- web app bienveillante qui a pour but de rendre la vie des utilisateurs plus fluides.
+
+## But
+
+Le but de ce projet est de mettre au point un web app d'emploi du temps pour personnes TDAH, autistes ou les deux. Cette app mettre le focus sur la journée en cours.
+
+## Optimisation du code
+
+* Le code sera optimisé pour répondre aux standards actuels html5 et css3
+* le code sera responsive et compatible avec les écrans de smartphones, tablettes, etc.
+* le code respectera, c'est important, les critères d'accessibilité WCAG 2.1 AA
+
+## Choix technologique
+
+Le choix d'une solution technique (back-end, front-end ou full stack) sera fait selon les critères suivants :
+
+* Est-ce que c'est la solution la plus simple ?
+* Est-ce que c'est la solution la plus robuste ?
+* Est-ce que c'est la solution la plus légére ? 
+* Est-ce que cette solution respecte la vie privée de l'utilisateur
+
+## Parties
+
+Les parties de cette web app sont :
+
+### Inscription
+
+#### Le formulaire d'inscription
+
+Le formulaire d'inscription demande
+
+* un nom d'utilisateur - vérifie si le nom existe déjà ou pas
+* une adresse mail valide
+* un mot de passe - la force du mot de passe sera affichée en durée nécessaire pour le craquer
+* le neurotype de l'utilisateur (TDAH, autiste, les deux)
+
+### Connection 
+
+L'utilisateur déjà inscrit entre son nom d'utilisateur et son mot de passe. 
+
+
+### Peupler l'emploi du temps 
+
+Après inscription, l'utilisateur indiquera les éléments de son emploi du temps. Ces éléments seront de deux types 
+
+#### Les éléments inscrits dans l'espace temps
+
+Ces éléments se passent un jour donné, à une heure précise, à un endroit. L'endroit peut-être le domicile de l'utilisateur ou à l'extérieur. Dans le cas d'un élément extérieur, l'utilisateur estimera la consommation d'énergie occasionnée par le trajet aller et retour
+
+Ces éléments sont inscrits dans l'emploi du temps
+
+#### Les éléments flottants 
+
+Ces éléments sont des actions. Ces actions comportent une durée estimée par l'utilisateur et une consommation d'énergie définie par l'utilisateur.
+
+### Emploi du temps 
+
+L'emploi du temps affiché est celui du jour. 
+
+Il sera affichế sur 24 heures. L'emploi du temps affichera les éléments espace temps et les éléments flottants. 
+Les éléments flottants pourront être déplacés par drag 'n' drop.
+
+
+
