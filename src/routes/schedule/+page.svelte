@@ -240,6 +240,8 @@
             
             <div 
               class="slot-content drop-zone"
+              role="application"
+              aria-label="Zone de dépôt pour {slot.time}"
               on:dragover={(e) => handleDragOver(e, createDropZone(slot.hour, handleTaskDrop))}
               on:dragenter={(e) => handleDragEnter(e, createDropZone(slot.hour, handleTaskDrop))}
               on:dragleave={handleDragLeave}

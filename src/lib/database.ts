@@ -1,7 +1,30 @@
 import Database from 'better-sqlite3';
 import { dev } from '$app/environment';
+import { writeFileSync, existsSync } from 'fs';
 
-const db = new Database(dev ? 'qfqa.db' : '/tmp/qfqa.db');
+// Database path for different environments
+const dbPath = dev ? 'qfqa.db' : '/tmp/qfqa.db';
+
+// Ensure directory exists in serverless environment
+if (!dev && !existsSync('/tmp')) {
+  try {
+    writeFileSync('/tmp/.keep', '');
+  } catch (error) {
+    console.warn('Could not create /tmp directory');
+  }
+}
+
+let db: Database.Database;
+
+try {
+  db = new Database(dbPath);
+  console.log(`Database initialized at: ${dbPath}`);
+} catch (error) {
+  console.error('Database initialization failed:', error);
+  // Fallback to in-memory database
+  db = new Database(':memory:');
+  console.log('Using in-memory database as fallback');
+}
 
 // Initialize database schema
 db.exec(`

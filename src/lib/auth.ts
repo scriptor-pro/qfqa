@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { JWT_SECRET } from '$env/static/private';
+import { JWT_SECRET } from './env';
 
 export interface User {
   id: number;

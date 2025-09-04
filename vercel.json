@@ -1,32 +1,10 @@
 {
+  "buildCommand": "npm run build",
+  "framework": "sveltekit",
   "functions": {
-    "src/routes/api/**/*.ts": {
-      "runtime": "nodejs18.x"
+    "src/routes/api/**/*.js": {
+      "runtime": "nodejs18.x",
+      "maxDuration": 10
     }
-  },
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        },
-        {
-          "key": "Access-Control-Allow-Methods",
-          "value": "GET, POST, PUT, PATCH, DELETE, OPTIONS"
-        },
-        {
-          "key": "Access-Control-Allow-Headers",
-          "value": "X-Requested-With, Content-Type, Authorization"
-        }
-      ]
-    }
-  ]
+  }
 }
