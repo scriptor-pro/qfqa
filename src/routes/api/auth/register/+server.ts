@@ -3,10 +3,14 @@ import type { RequestHandler } from './$types';
 import db from '$lib/database';
 import { hashPassword, generateToken } from '$lib/auth';
 import { validateFields, validateUsername, validateEmail, validatePassword, validateNeurotype, sanitizeText } from '$lib/validation';
+import { checkJWTSecretInProduction } from '$lib/env';
 import type { User } from '$lib/types';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
+    // Check JWT_SECRET at runtime in production
+    checkJWTSecretInProduction();
+    
     const { username, email, password, neurotype } = await request.json();
     
     // Comprehensive validation
