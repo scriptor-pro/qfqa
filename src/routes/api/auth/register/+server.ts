@@ -8,10 +8,14 @@ import type { User } from '$lib/types';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
+    console.log('Register API: Starting registration process');
+    
     // Check JWT_SECRET at runtime in production
     checkJWTSecretInProduction();
+    console.log('Register API: JWT_SECRET validation passed');
     
     const { username, email, password, neurotype } = await request.json();
+    console.log('Register API: Request data parsed', { username, email, neurotype });
     
     // Comprehensive validation
     const validation = validateFields(
@@ -25,11 +29,15 @@ export const POST: RequestHandler = async ({ request }) => {
     );
     
     if (!validation.valid) {
+      console.log('Register API: Validation failed', validation.errors);
       return json({ message: validation.errors.join(', ') }, { status: 400 });
     }
+    console.log('Register API: Validation passed');
     
     // Check if user already exists
+    console.log('Register API: Checking existing user');
     const existingUser = db.prepare('SELECT id FROM users WHERE username = ? OR email = ?').get(username, email);
+    console.log('Register API: Existing user check completed');
     
     if (existingUser) {
       return json({ message: 'Nom d\'utilisateur ou email déjà utilisé' }, { status: 409 });
@@ -69,7 +77,14 @@ export const POST: RequestHandler = async ({ request }) => {
     });
     
   } catch (error) {
-    console.error('Registration error:', error);
-    return json({ message: 'Erreur interne du serveur' }, { status: 500 });
+    console.error('Registration error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
+    return json({ 
+      message: 'Erreur interne du serveur',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    }, { status: 500 });
   }
 };

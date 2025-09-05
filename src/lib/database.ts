@@ -19,11 +19,26 @@ let db: Database.Database;
 try {
   db = new Database(dbPath);
   console.log(`Database initialized at: ${dbPath}`);
+  
+  // Test database connection
+  db.exec('SELECT 1');
+  console.log('Database connection test successful');
 } catch (error) {
   console.error('Database initialization failed:', error);
+  console.error('Error details:', {
+    message: error.message,
+    code: error.code,
+    stack: error.stack
+  });
+  
   // Fallback to in-memory database
-  db = new Database(':memory:');
-  console.log('Using in-memory database as fallback');
+  try {
+    db = new Database(':memory:');
+    console.log('Using in-memory database as fallback');
+  } catch (fallbackError) {
+    console.error('Even in-memory database failed:', fallbackError);
+    throw new Error('Unable to initialize any database');
+  }
 }
 
 // Initialize database schema
