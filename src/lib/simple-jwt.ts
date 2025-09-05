@@ -2,9 +2,10 @@
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-jwt-secret-key-for-development-only-not-secure';
 
-// Base64 URL encoding (without padding)
+// Base64 URL encoding (without padding) - Node.js compatible
 function base64urlEncode(str: string): string {
-  return btoa(str)
+  return Buffer.from(str, 'utf8')
+    .toString('base64')
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
     .replace(/=/g, '');
@@ -14,7 +15,7 @@ function base64urlDecode(str: string): string {
   // Add padding if needed
   const padding = '='.repeat((4 - (str.length % 4)) % 4);
   const base64 = str.replace(/-/g, '+').replace(/_/g, '/') + padding;
-  return atob(base64);
+  return Buffer.from(base64, 'base64').toString('utf8');
 }
 
 // HMAC-SHA256 signature
@@ -29,8 +30,8 @@ async function createSignature(data: string): Promise<string> {
   );
   
   const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(data));
-  const signatureArray = Array.from(new Uint8Array(signature));
-  const signatureBase64 = btoa(String.fromCharCode(...signatureArray));
+  const signatureArray = new Uint8Array(signature);
+  const signatureBase64 = Buffer.from(signatureArray).toString('base64');
   
   return signatureBase64
     .replace(/\+/g, '-')
