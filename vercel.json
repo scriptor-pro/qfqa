@@ -2,7 +2,7 @@
   "framework": "sveltekit",
   "buildCommand": "npm run build",
   "functions": {
-    "src/routes/**/*.ts": {
+    "**": {
       "runtime": "nodejs22.x"
     }
   }
