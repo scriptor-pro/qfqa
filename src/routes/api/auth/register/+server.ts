@@ -4,27 +4,11 @@ import { hashPassword, generateToken } from '$lib/auth';
 import { validateFields, validateUsername, validateEmail, validatePassword, validateNeurotype, sanitizeText } from '$lib/validation';
 import { checkJWTSecretInProduction } from '$lib/env';
 import type { User } from '$lib/types';
-
-// Database initialization function
-async function initDatabase() {
-  try {
-    const dbModule = await import('$lib/database');
-    console.log('Using SQLite database');
-    return { useDatabase: true, db: dbModule.default, fallback: null };
-  } catch (error) {
-    console.log('SQLite failed, using fallback:', error.message);
-    const fallback = await import('$lib/database-fallback');
-    return { useDatabase: false, db: null, fallback };
-  }
-}
+import { createUser, findUserByUsernameOrEmail } from '$lib/database-fallback';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     console.log('Register API: Starting registration process');
-    
-    // Initialize database
-    const dbConfig = await initDatabase();
-    const { useDatabase, db, fallback } = dbConfig;
     
     // Check JWT_SECRET at runtime in production
     checkJWTSecretInProduction();
@@ -52,13 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
     // Check if user already exists
     console.log('Register API: Checking existing user');
-    let existingUser;
-    
-    if (useDatabase) {
-      existingUser = db.prepare('SELECT id FROM users WHERE username = ? OR email = ?').get(username, email);
-    } else {
-      existingUser = fallback.findUserByUsernameOrEmail(username, email);
-    }
+    const existingUser = findUserByUsernameOrEmail(username, email);
     console.log('Register API: Existing user check completed');
     
     if (existingUser) {
@@ -70,30 +48,19 @@ export const POST: RequestHandler = async ({ request }) => {
     const sanitizedEmail = sanitizeText(email, 320);
     
     // Hash password and create user
+    console.log('Register API: Hashing password');
     const passwordHash = await hashPassword(password);
+    console.log('Register API: Password hashed successfully');
     
-    let user;
-    
-    if (useDatabase) {
-      const insertUser = db.prepare(`
-        INSERT INTO users (username, email, password_hash, neurotype)
-        VALUES (?, ?, ?, ?)
-      `);
-      
-      const result = insertUser.run(sanitizedUsername, sanitizedEmail, passwordHash, neurotype);
-      const userId = result.lastInsertRowid;
-      
-      // Get created user
-      user = db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
-    } else {
-      // Use fallback storage
-      user = fallback.createUser({
-        username: sanitizedUsername,
-        email: sanitizedEmail,
-        password_hash: passwordHash,
-        neurotype
-      });
-    }
+    // Create user with fallback storage
+    console.log('Register API: Creating user');
+    const user = createUser({
+      username: sanitizedUsername,
+      email: sanitizedEmail,
+      password_hash: passwordHash,
+      neurotype
+    });
+    console.log('Register API: User created successfully');
     
     // Generate JWT token
     const token = generateToken(user as User);
