@@ -31,10 +31,11 @@
     "vite": "^5.0.3"
   },
   "dependencies": {
+    "@anthropic-ai/claude-code": "^1.0.107",
+    "@types/better-sqlite3": "^7.6.9",
     "bcryptjs": "^2.4.3",
-    "better-sqlite3": "^9.4.0",
-    "jsonwebtoken": "^9.0.2",
-    "@types/better-sqlite3": "^7.6.9"
+    "better-sqlite3": "^12.2.0",
+    "jsonwebtoken": "^9.0.2"
   },
   "type": "module"
 }

@@ -436,19 +436,8 @@
     transition: background-color 0.2s ease, border-color 0.2s ease;
   }
   
-  .drop-zone.drag-over {
-    background: rgba(var(--color-accent), 0.05);
-  }
   
-  .drop-zone.valid-drop {
-    background: rgba(16, 185, 129, 0.1);
-    border: 2px dashed var(--color-success);
-  }
   
-  .drop-zone.invalid-drop {
-    background: rgba(239, 68, 68, 0.1);
-    border: 2px dashed var(--color-error);
-  }
   
   .empty-slot {
     display: flex;
@@ -467,17 +456,8 @@
     transition: opacity 0.2s ease;
   }
   
-  .drop-zone.drag-over .drop-hint {
-    opacity: 1;
-  }
   
-  .drop-zone.valid-drop .drop-hint {
-    color: var(--color-success);
-  }
   
-  .drop-zone.invalid-drop .drop-hint {
-    color: var(--color-error);
-  }
   
   /* Dragging state styles */
   :global(.task-card.dragging) {

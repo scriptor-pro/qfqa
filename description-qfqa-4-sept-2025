@@ -20,10 +20,10 @@ Le but de ce projet est de mettre au point un web app d'emploi du temps pour per
 
 Le choix d'une solution technique (back-end, front-end ou full stack) sera fait selon les critères suivants :
 
-* Est-ce que c'est la solution la plus simple ?
-* Est-ce que c'est la solution la plus robuste ?
-* Est-ce que c'est la solution la plus légére ? 
-* Est-ce que cette solution respecte la vie privée de l'utilisateur
+* Est-ce que c'est la solution technologiquement la plus simple ? 
+* Est-ce que c'est la solution technologiquement la plus robuste ?
+* Est-ce que c'est la solution technologiquement la plus légére ? 
+* Est-ce que cette solution respecte la vie privée de l'utilisateur (RGPD) etc?
 
 ## Parties
 
@@ -68,7 +68,7 @@ L'emploi du temps affiché est celui du jour.
 Il sera affichế sur 24 heures. L'emploi du temps affichera les éléments espace temps et les éléments flottants. 
 Les éléments flottants pourront être déplacés par drag 'n' drop.
 
-
+### Répartition de l'emploi du temps pour chaque neurotype
 
 
 

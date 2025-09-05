@@ -37,7 +37,7 @@
         style="height: {5 + (level * 7)}%"
         on:click={() => updateEnergy(level)}
         on:keydown={(e) => handleKeydown(e, level)}
-        tabindex={interactive ? 0 : null}
+        tabindex={interactive ? 0 : -1}
         role={interactive ? 'button' : null}
         aria-label={interactive ? `Niveau ${level}` : null}
       >

@@ -217,8 +217,7 @@
     color: var(--color-text);
   }
   
-  .form-group input.invalid,
-  .form-group select.invalid {
+  .form-group input.invalid {
     border-color: var(--color-error);
   }
   
