@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import jwt from 'jsonwebtoken';
+import { createToken } from '$lib/simple-jwt';
 
 // Environment variables
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-jwt-secret-key-for-development-only-not-secure';
@@ -48,14 +48,14 @@ async function hashPassword(password: string): Promise<string> {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// JWT token generation
-function generateToken(user: any): string {
+// JWT token generation using simple JWT
+async function generateToken(user: any): Promise<string> {
   const payload = {
     userId: user.id,
     username: user.username,
     subscription_plan: user.subscription_plan
   };
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+  return await createToken(payload);
 }
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -122,7 +122,9 @@ export const POST: RequestHandler = async ({ request }) => {
     console.log('Register API: User created', { id: user.id, username: user.username });
     
     // Generate JWT token
-    const token = generateToken(user);
+    console.log('Register API: Generating JWT token');
+    const token = await generateToken(user);
+    console.log('Register API: JWT token generated');
     
     return json({
       message: 'Compte créé avec succès',
