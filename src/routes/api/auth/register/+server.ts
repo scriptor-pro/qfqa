@@ -1,44 +1,97 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { hashPassword, generateToken } from '$lib/auth';
-import { validateFields, validateUsername, validateEmail, validatePassword, validateNeurotype, sanitizeText } from '$lib/validation';
-import { checkJWTSecretInProduction } from '$lib/env';
-import type { User } from '$lib/types';
-import { createUser, findUserByUsernameOrEmail } from '$lib/database-fallback';
+import jwt from 'jsonwebtoken';
+
+// Environment variables
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-jwt-secret-key-for-development-only-not-secure';
+
+// Shared global storage for serverless compatibility
+declare global {
+  var __qfqa_users: any[];
+  var __qfqa_userId: number;
+}
+
+// Initialize or access shared storage
+const users = globalThis.__qfqa_users || [];
+let userId = globalThis.__qfqa_userId || 1;
+
+if (!globalThis.__qfqa_users) {
+  globalThis.__qfqa_users = users;
+  globalThis.__qfqa_userId = userId;
+}
+
+// Utility functions
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function sanitizeText(text: string, maxLength = 1000): string {
+  if (!text) return '';
+  return text
+    .replace(/<[^>]*>/g, '') // Remove HTML tags
+    .replace(/[<>&"']/g, (match) => {
+      const entities: { [key: string]: string } = {
+        '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#x27;'
+      };
+      return entities[match];
+    })
+    .trim()
+    .substring(0, maxLength);
+}
+
+// Password hashing with Web Crypto API
+async function hashPassword(password: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password + 'qfqa_salt_2025_secure');
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// JWT token generation
+function generateToken(user: any): string {
+  const payload = {
+    userId: user.id,
+    username: user.username,
+    subscription_plan: user.subscription_plan
+  };
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+}
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     console.log('Register API: Starting registration process');
     
-    // Check JWT_SECRET at runtime in production
-    checkJWTSecretInProduction();
-    console.log('Register API: JWT_SECRET validation passed');
-    
-    const { username, email, password, neurotype } = await request.json();
-    console.log('Register API: Request data parsed', { username, email, neurotype });
-    
-    // Comprehensive validation
-    const validation = validateFields(
-      { username, email, password, neurotype },
-      {
-        username: validateUsername,
-        email: validateEmail,
-        password: validatePassword,
-        neurotype: validateNeurotype
-      }
-    );
-    
-    if (!validation.valid) {
-      console.log('Register API: Validation failed', validation.errors);
-      return json({ message: validation.errors.join(', ') }, { status: 400 });
+    // Check JWT_SECRET in production
+    if (!process.env.JWT_SECRET && process.env.NODE_ENV === 'production') {
+      throw new Error('JWT_SECRET must be set in production');
     }
+    
+    // Parse request
+    const { username, email, password, neurotype } = await request.json();
+    console.log('Register API: Request parsed', { username, email, neurotype });
+    
+    // Validation
+    if (!username || username.length < 3 || username.length > 50) {
+      return json({ message: 'Nom d\'utilisateur invalide (3-50 caractères)' }, { status: 400 });
+    }
+    
+    if (!email || !isValidEmail(email) || email.length > 320) {
+      return json({ message: 'Email invalide' }, { status: 400 });
+    }
+    
+    if (!password || password.length < 8 || password.length > 128) {
+      return json({ message: 'Mot de passe invalide (8-128 caractères)' }, { status: 400 });
+    }
+    
+    if (!['TDAH', 'Autiste', 'Les deux'].includes(neurotype)) {
+      return json({ message: 'Neurotype invalide' }, { status: 400 });
+    }
+    
     console.log('Register API: Validation passed');
     
-    // Check if user already exists
-    console.log('Register API: Checking existing user');
-    const existingUser = findUserByUsernameOrEmail(username, email);
-    console.log('Register API: Existing user check completed');
-    
+    // Check existing user
+    const existingUser = users.find(u => u.username === username || u.email === email);
     if (existingUser) {
       return json({ message: 'Nom d\'utilisateur ou email déjà utilisé' }, { status: 409 });
     }
@@ -47,23 +100,29 @@ export const POST: RequestHandler = async ({ request }) => {
     const sanitizedUsername = sanitizeText(username, 50);
     const sanitizedEmail = sanitizeText(email, 320);
     
-    // Hash password and create user
+    // Hash password
     console.log('Register API: Hashing password');
     const passwordHash = await hashPassword(password);
-    console.log('Register API: Password hashed successfully');
     
-    // Create user with fallback storage
-    console.log('Register API: Creating user');
-    const user = createUser({
+    // Create user
+    const user = {
+      id: ++globalThis.__qfqa_userId,
       username: sanitizedUsername,
       email: sanitizedEmail,
       password_hash: passwordHash,
-      neurotype
-    });
-    console.log('Register API: User created successfully');
+      neurotype,
+      subscription_status: 'trial',
+      subscription_plan: 'free',
+      trial_end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+    
+    users.push(user);
+    console.log('Register API: User created', { id: user.id, username: user.username });
     
     // Generate JWT token
-    const token = generateToken(user as User);
+    const token = generateToken(user);
     
     return json({
       message: 'Compte créé avec succès',

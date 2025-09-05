@@ -1,51 +1,90 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import db from '$lib/database';
-import { comparePassword, generateToken } from '$lib/auth';
+import jwt from 'jsonwebtoken';
+
+// Environment variables (consistent with register)
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-jwt-secret-key-for-development-only-not-secure';
+
+// Shared users array (same as register endpoint)
+declare global {
+  var __qfqa_users: any[];
+  var __qfqa_userId: number;
+}
+
+// Access shared storage
+const users = globalThis.__qfqa_users || [];
+if (!globalThis.__qfqa_users) {
+  globalThis.__qfqa_users = users;
+  globalThis.__qfqa_userId = 1;
+}
+
+// Password verification with Web Crypto API
+async function verifyPassword(password: string, hash: string): Promise<boolean> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password + 'qfqa_salt_2025_secure');
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const computedHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return computedHash === hash;
+}
+
+// JWT token generation
+function generateToken(user: any): string {
+  const payload = {
+    userId: user.id,
+    username: user.username,
+    subscription_plan: user.subscription_plan
+  };
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+}
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
+    console.log('Login API: Starting login process');
+    
+    // Check JWT_SECRET in production
+    if (!process.env.JWT_SECRET && process.env.NODE_ENV === 'production') {
+      throw new Error('JWT_SECRET must be set in production');
+    }
+    
+    // Parse request
     const { username, password } = await request.json();
+    console.log('Login API: Request parsed', { username });
     
     // Validation
     if (!username || !password) {
       return json({ message: 'Nom d\'utilisateur et mot de passe requis' }, { status: 400 });
     }
     
-    // Find user
-    const user = db.prepare('SELECT * FROM users WHERE username = ?').get(username);
+    // Find user in memory storage
+    const user = users.find(u => u.username === username);
     
     if (!user) {
+      console.log('Login API: User not found');
       return json({ message: 'Nom d\'utilisateur ou mot de passe incorrect' }, { status: 401 });
     }
     
     // Verify password
-    const isValidPassword = await comparePassword(password, user.password_hash);
+    console.log('Login API: Verifying password');
+    const validPassword = await verifyPassword(password, user.password_hash);
     
-    if (!isValidPassword) {
+    if (!validPassword) {
+      console.log('Login API: Invalid password');
       return json({ message: 'Nom d\'utilisateur ou mot de passe incorrect' }, { status: 401 });
     }
     
-    // Check subscription status
+    console.log('Login API: Login successful');
+    
+    // Check subscription status (simplified for memory storage)
     const now = new Date();
-    const subscriptionEnd = user.subscription_end ? new Date(user.subscription_end) : null;
     const trialEnd = user.trial_end_date ? new Date(user.trial_end_date) : null;
     
-    let subscriptionStatus = user.subscription_status;
-    
-    if (subscriptionStatus === 'trial' && trialEnd && now > trialEnd) {
-      subscriptionStatus = 'expired';
-      db.prepare('UPDATE users SET subscription_status = ? WHERE id = ?').run('expired', user.id);
-    } else if (subscriptionStatus === 'active' && subscriptionEnd && now > subscriptionEnd) {
-      subscriptionStatus = 'expired';
-      db.prepare('UPDATE users SET subscription_status = ? WHERE id = ?').run('expired', user.id);
+    if (user.subscription_status === 'trial' && trialEnd && now > trialEnd) {
+      user.subscription_status = 'expired';
     }
     
     // Generate JWT token
-    const token = generateToken({
-      ...user,
-      subscription_status: subscriptionStatus
-    });
+    const token = generateToken(user);
     
     return json({
       message: 'Connexion réussie',
