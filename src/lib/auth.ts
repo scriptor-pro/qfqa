@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { JWT_SECRET } from './env';
+import { JWT_SECRET_RESOLVED } from './env';
 
 export interface User {
   id: number;
@@ -24,12 +24,12 @@ export function generateToken(user: User): string {
     subscription_plan: user.subscription_plan
   };
   
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+  return jwt.sign(payload, JWT_SECRET_RESOLVED, { expiresIn: '7d' });
 }
 
 export function verifyToken(token: string): JWTPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as JWTPayload;
+    return jwt.verify(token, JWT_SECRET_RESOLVED) as JWTPayload;
   } catch {
     return null;
   }

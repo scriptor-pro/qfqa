@@ -2,26 +2,26 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import db from '$lib/database';
 import { hashPassword, generateToken } from '$lib/auth';
+import { validateFields, validateUsername, validateEmail, validatePassword, validateNeurotype, sanitizeText } from '$lib/validation';
+import type { User } from '$lib/types';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { username, email, password, neurotype } = await request.json();
     
-    // Validation
-    if (!username || !email || !password || !neurotype) {
-      return json({ message: 'Tous les champs sont requis' }, { status: 400 });
-    }
+    // Comprehensive validation
+    const validation = validateFields(
+      { username, email, password, neurotype },
+      {
+        username: validateUsername,
+        email: validateEmail,
+        password: validatePassword,
+        neurotype: validateNeurotype
+      }
+    );
     
-    if (username.length < 3) {
-      return json({ message: 'Le nom d\'utilisateur doit faire au moins 3 caractères' }, { status: 400 });
-    }
-    
-    if (password.length < 8) {
-      return json({ message: 'Le mot de passe doit faire au moins 8 caractères' }, { status: 400 });
-    }
-    
-    if (!['TDAH', 'Autiste', 'Les deux'].includes(neurotype)) {
-      return json({ message: 'Neurotype invalide' }, { status: 400 });
+    if (!validation.valid) {
+      return json({ message: validation.errors.join(', ') }, { status: 400 });
     }
     
     // Check if user already exists
@@ -31,6 +31,10 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({ message: 'Nom d\'utilisateur ou email déjà utilisé' }, { status: 409 });
     }
     
+    // Sanitize inputs
+    const sanitizedUsername = sanitizeText(username, 50);
+    const sanitizedEmail = sanitizeText(email, 320);
+    
     // Hash password and create user
     const passwordHash = await hashPassword(password);
     
@@ -39,14 +43,14 @@ export const POST: RequestHandler = async ({ request }) => {
       VALUES (?, ?, ?, ?)
     `);
     
-    const result = insertUser.run(username, email, passwordHash, neurotype);
+    const result = insertUser.run(sanitizedUsername, sanitizedEmail, passwordHash, neurotype);
     const userId = result.lastInsertRowid;
     
     // Get created user
     const user = db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
     
     // Generate JWT token
-    const token = generateToken(user as any);
+    const token = generateToken(user as User);
     
     return json({
       message: 'Compte créé avec succès',

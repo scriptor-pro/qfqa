@@ -32,17 +32,24 @@
   <div class="energy-scale">
     {#each Array(12) as _, i}
       {@const level = i + 1}
-      <div 
-        class="energy-level energy-{level} {level <= energy ? 'active' : ''} {interactive ? 'interactive' : ''}"
-        style="height: {5 + (level * 7)}%"
-        on:click={() => updateEnergy(level)}
-        on:keydown={(e) => handleKeydown(e, level)}
-        tabindex={interactive ? 0 : -1}
-        role={interactive ? 'button' : null}
-        aria-label={interactive ? `Niveau ${level}` : null}
-      >
-        <span class="level-number">{level}</span>
-      </div>
+      {#if interactive}
+        <button
+          class="energy-level energy-{level} {level <= energy ? 'active' : ''} interactive"
+          style="height: {5 + (level * 7)}%"
+          on:click={() => updateEnergy(level)}
+          aria-label="Niveau {level}"
+        >
+          <span class="level-number">{level}</span>
+        </button>
+      {:else}
+        <div 
+          class="energy-level energy-{level} {level <= energy ? 'active' : ''}"
+          style="height: {5 + (level * 7)}%"
+          aria-label="Niveau {level}"
+        >
+          <span class="level-number">{level}</span>
+        </div>
+      {/if}
     {/each}
   </div>
   
@@ -80,6 +87,9 @@
     position: relative;
     opacity: 0.3;
     transition: opacity 0.2s ease;
+    border: none;
+    padding: 0;
+    background: transparent;
   }
   
   .energy-level.active {
