@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Connexion à votre compte QFQA - Emploi du temps adapté aux neurodivergents">
+    <meta name="theme-color" content="#0066cc">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <title>Connexion - QFQA</title>
+    
+    <!-- Styles locaux optimisés -->
+    <link rel="stylesheet" href="/css/vanilla-custom.css">
+    <link rel="stylesheet" href="/css/qfqa-optimized.css">
+    
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body class="l-application">
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+    
+    <header class="l-navigation p-navigation" role="banner">
+        <div class="row">
+            <div class="col-12">
+                <div class="p-navigation__header">
+                    <h1 class="p-navigation__brand">
+                        <a href="/" hx-get="/" hx-target="#main-content" hx-push-url="true" class="p-navigation__link">
+                            🧠 QFQA
+                        </a>
+                    </h1>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="l-main" id="main-content" tabindex="-1">
+        <div class="row">
+            <div class="col-12 col-medium-6 col-large-4 u-align--center">
+                <div class="p-card p-card--highlighted">
+                    <div class="p-card__header">
+                        <h2 class="p-heading--2">Connexion à QFQA</h2>
+                        <p class="u-text--muted">Accédez à votre espace personnel</p>
+                    </div>
+                    
+                    <div class="p-card__content">
+                        <form 
+                            hx-post="/api/collections/users/auth-with-password" 
+                            hx-target="#login-response"
+                            hx-disabled-elt="#login-submit"
+                            id="login-form"
+                            novalidate
+                            class="p-form p-form--stacked"
+                        >
+                            <div class="p-form__group">
+                                <label for="username" class="p-form__label">
+                                    Nom d'utilisateur *
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="username" 
+                                    name="identity"
+                                    class="p-form__control"
+                                    required
+                                    autocomplete="username"
+                                    aria-describedby="username-help"
+                                    placeholder="Votre nom d'utilisateur"
+                                >
+                                <p class="p-form__help-text" id="username-help">
+                                    Utilisez votre nom d'utilisateur ou adresse email.
+                                </p>
+                            </div>
+
+                            <div class="p-form__group">
+                                <label for="password" class="p-form__label">
+                                    Mot de passe *
+                                </label>
+                                <div class="p-form__password-toggle">
+                                    <input 
+                                        type="password" 
+                                        id="password" 
+                                        name="password"
+                                        class="p-form__control"
+                                        required
+                                        autocomplete="current-password"
+                                        aria-describedby="password-help"
+                                        placeholder="Votre mot de passe"
+                                    >
+                                    <button 
+                                        type="button" 
+                                        class="p-button--base p-button--small"
+                                        aria-label="Afficher le mot de passe"
+                                        id="password-toggle-btn"
+                                    >
+                                        👁️
+                                    </button>
+                                </div>
+                                <p class="p-form__help-text" id="password-help">
+                                    Au moins 8 caractères requis.
+                                </p>
+                            </div>
+
+                            <div id="login-response" aria-live="polite" aria-atomic="true"></div>
+
+                            <div class="p-form__group">
+                                <button 
+                                    type="submit" 
+                                    class="p-button--positive u-width--full"
+                                    id="login-submit"
+                                >
+                                    Se connecter
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Actions secondaires -->
+                <div class="auth-actions u-sv2">
+                    <div class="p-button-group">
+                        <button 
+                            type="button"
+                            class="p-button--base"
+                            hx-get="/register.html"
+                            hx-target="#main-content"
+                            hx-push-url="true"
+                        >
+                            Créer un compte
+                        </button>
+                        
+                        <button 
+                            type="button" 
+                            class="p-button--base"
+                            hx-get="/forgot-password.html"
+                            hx-target="#main-content"
+                            hx-push-url="true"
+                        >
+                            Mot de passe oublié ?
+                        </button>
+                    </div>
+
+                    <!-- Mode démo optimisé -->
+                    <div class="demo-section u-sv2">
+                        <div class="p-notification p-notification--information">
+                            <div class="p-notification__content">
+                                <h4 class="p-notification__title">Essayer sans compte</h4>
+                                <p class="p-notification__message">
+                                    Découvrez QFQA avec des données d'exemple.
+                                </p>
+                                <button 
+                                    type="button"
+                                    class="p-button--neutral"
+                                    hx-post="/api/demo-login"
+                                    hx-target="#login-response"
+                                >
+                                    🚀 Mode démo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="l-footer p-footer" role="contentinfo">
+        <div class="row">
+            <div class="col-12">
+                <div class="p-footer__content">
+                    <p>&copy; 2024 QFQA - Organiser son quotidien avec bienveillance</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/main-optimized.js"></script>
+</body>
+</html>

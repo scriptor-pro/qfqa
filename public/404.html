@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page non trouvée - QFQA</title>
+    <meta name="description" content="Page non trouvée sur QFQA - Retourner à l'emploi du temps">
+    <meta name="theme-color" content="#0066cc">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-framework@4.13.0/build/css/build.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/navigation.css">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body class="l-application has-sticky-nav">
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+    
+    <!-- Navigation responsive -->
+    <div id="navigation-placeholder"></div>
+
+    <main class="l-main with-nav" id="main-content" tabindex="-1">
+        <div class="row">
+            <div class="col-8 col-start-large-3">
+                <div class="error-page">
+                    <div class="error-illustration">
+                        <div class="error-code">404</div>
+                        <div class="error-emoji">🤔</div>
+                    </div>
+                    
+                    <div class="p-card">
+                        <div class="p-card__header">
+                            <h1 class="p-heading--1">Page introuvable</h1>
+                            <p class="error-subtitle">
+                                Cette page n'existe pas ou a été déplacée.
+                            </p>
+                        </div>
+                        
+                        <div class="p-card__content">
+                            <div class="error-suggestions">
+                                <h2 class="p-heading--3">Que souhaitez-vous faire ?</h2>
+                                
+                                <div class="error-actions">
+                                    <button 
+                                        class="p-button--positive"
+                                        hx-get="/"
+                                        hx-target="#main-content"
+                                        hx-push-url="true"
+                                    >
+                                        🏠 Retour à l'accueil
+                                    </button>
+                                    
+                                    <button 
+                                        class="p-button--base"
+                                        hx-get="/login.html"
+                                        hx-target="#main-content"
+                                        hx-push-url="true"
+                                    >
+                                        🔑 Me connecter
+                                    </button>
+                                    
+                                    <button 
+                                        class="p-button--base"
+                                        hx-get="/register.html"
+                                        hx-target="#main-content"
+                                        hx-push-url="true"
+                                    >
+                                        ✨ Créer un compte
+                                    </button>
+                                </div>
+                                
+                                <div class="error-help">
+                                    <h3 class="p-heading--4">Pages principales</h3>
+                                    <ul class="error-links">
+                                        <li>
+                                            <a href="/schedule.html" 
+                                               hx-get="/schedule.html" 
+                                               hx-target="#main-content" 
+                                               hx-push-url="true">
+                                                📅 Mon emploi du temps
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/setup.html" 
+                                               hx-get="/setup.html" 
+                                               hx-target="#main-content" 
+                                               hx-push-url="true">
+                                                ⚙️ Configuration
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Informations de debug (visibles seulement en développement) -->
+                    <div class="error-debug" id="error-debug" style="display: none;">
+                        <details>
+                            <summary>Informations techniques</summary>
+                            <div class="debug-info">
+                                <p><strong>URL demandée :</strong> <span id="requested-url"></span></p>
+                                <p><strong>Référent :</strong> <span id="referrer"></span></p>
+                                <p><strong>User Agent :</strong> <span id="user-agent"></span></p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="l-footer" role="contentinfo">
+        <div class="row">
+            <div class="col-12">
+                <p>&copy; 2024 QFQA - Organiser son quotidien avec bienveillance</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/load-navigation.js"></script>
+    <script src="/js/navigation.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        // Afficher les informations de debug si nécessaire
+        document.addEventListener('DOMContentLoaded', function() {
+            const isDevelopment = window.location.hostname === 'localhost' || 
+                                 window.location.hostname === '127.0.0.1';
+            
+            if (isDevelopment) {
+                const debugSection = document.getElementById('error-debug');
+                debugSection.style.display = 'block';
+                
+                // Remplir les informations de debug
+                document.getElementById('requested-url').textContent = window.location.href;
+                document.getElementById('referrer').textContent = document.referrer || 'Aucun';
+                document.getElementById('user-agent').textContent = navigator.userAgent;
+            }
+            
+            // Animation d'entrée
+            const errorPage = document.querySelector('.error-page');
+            errorPage.style.opacity = '0';
+            errorPage.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                errorPage.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                errorPage.style.opacity = '1';
+                errorPage.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

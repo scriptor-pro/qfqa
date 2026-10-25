@@ -1,0 +1,66 @@
+[build]
+  publish = "public"
+  
+[build.environment]
+  NODE_VERSION = "18"
+
+# Proxy API vers le backend PocketBase
+[[redirects]]
+  from = "/api/collections/*"
+  to = "https://qfqa-backend.render.com/api/collections/:splat"
+  status = 200
+  force = true
+  headers = {X-From = "Netlify"}
+
+# Configuration des redirections SPA (doit être en dernier)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Configuration des en-têtes de sécurité
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = """
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' https://unpkg.com;
+      style-src 'self' 'unsafe-inline' https://unpkg.com;
+      font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;
+      img-src 'self' data: https:;
+      connect-src 'self' https://qfqa-backend.render.com;
+    """
+
+# Configuration pour les fichiers statiques avec cache
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+    
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+# Configuration des routes HTMX
+[[redirects]]
+  from = "/api/*"
+  to = "https://qfqa-backend.render.com/api/:splat"
+  status = 200
+  force = true
+
+# Gestion des erreurs
+[[redirects]]
+  from = "/404"
+  to = "/404.html"
+  status = 404
+
+# Configuration pour PWA (future)
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Content-Type = "application/manifest+json"

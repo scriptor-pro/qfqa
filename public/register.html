@@ -1,0 +1,339 @@
+<div class="row">
+    <div class="col-12 col-medium-8 col-large-6 u-align--center">
+        <div class="p-card">
+            <div class="p-card__header">
+                <h2 class="p-heading--2">Inscription à QFQA</h2>
+                <p class="u-text--muted">Créez votre compte pour commencer à organiser votre quotidien</p>
+            </div>
+            
+            <div class="p-card__content">
+                <form 
+                    hx-post="/api/collections/users/records" 
+                    hx-target="#register-response"
+                    hx-disabled-elt="#register-submit"
+                    id="register-form"
+                    novalidate
+                >
+                    <div class="form-group">
+                        <label for="username" class="form-label">
+                            Nom d'utilisateur *
+                        </label>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username" 
+                            class="form-input"
+                            required
+                            minlength="3"
+                            maxlength="20"
+                            pattern="^[a-zA-Z0-9_-]+$"
+                            aria-describedby="username-help"
+                            autocomplete="username"
+                            hx-post="/api/check-username"
+                            hx-trigger="blur delay:500ms"
+                            hx-target="#username-availability"
+                        >
+                        <div class="form-help" id="username-help">
+                            Entre 3 et 20 caractères. Lettres, chiffres, _ et - uniquement.
+                        </div>
+                        <div id="username-availability" aria-live="polite"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label">
+                            Adresse e-mail *
+                        </label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            class="form-input"
+                            required
+                            aria-describedby="email-help"
+                            autocomplete="email"
+                        >
+                        <div class="form-help" id="email-help">
+                            Nous utiliserons cette adresse pour vous envoyer des informations importantes.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">
+                            Mot de passe *
+                        </label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            class="form-input"
+                            required
+                            minlength="8"
+                            aria-describedby="password-help password-strength"
+                            autocomplete="new-password"
+                        >
+                        <div class="form-help" id="password-help">
+                            Au moins 8 caractères avec majuscules, minuscules, chiffres et caractères spéciaux.
+                        </div>
+                        <div id="password-strength" class="password-strength" aria-live="polite">
+                            <div class="strength-bar">
+                                <div class="strength-fill" style="width: 0%"></div>
+                            </div>
+                            <div class="strength-text">Saisissez un mot de passe</div>
+                            <div class="strength-time"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password-confirm" class="form-label">
+                            Confirmer le mot de passe *
+                        </label>
+                        <input 
+                            type="password" 
+                            id="password-confirm" 
+                            name="password_confirm" 
+                            class="form-input"
+                            required
+                            aria-describedby="password-confirm-help"
+                            autocomplete="new-password"
+                        >
+                        <div class="form-help" id="password-confirm-help">
+                            Saisissez à nouveau votre mot de passe pour confirmation.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <fieldset>
+                            <legend class="form-label">Votre neurotype *</legend>
+                            <div class="p-radio" role="radiogroup" aria-describedby="neurotype-help">
+                                <input 
+                                    type="radio" 
+                                    id="neurotype-tdah" 
+                                    name="neurotype" 
+                                    value="tdah"
+                                    class="p-radio__input"
+                                    required
+                                >
+                                <label for="neurotype-tdah" class="p-radio__label">
+                                    TDAH
+                                </label>
+                                
+                                <input 
+                                    type="radio" 
+                                    id="neurotype-autiste" 
+                                    name="neurotype" 
+                                    value="autiste"
+                                    class="p-radio__input"
+                                    required
+                                >
+                                <label for="neurotype-autiste" class="p-radio__label">
+                                    Autiste
+                                </label>
+                                
+                                <input 
+                                    type="radio" 
+                                    id="neurotype-both" 
+                                    name="neurotype" 
+                                    value="both"
+                                    class="p-radio__input"
+                                    required
+                                >
+                                <label for="neurotype-both" class="p-radio__label">
+                                    Les deux (TDAH + Autisme)
+                                </label>
+                            </div>
+                            <div class="form-help" id="neurotype-help">
+                                Cette information nous aide à personnaliser votre expérience.
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="p-checkbox">
+                            <input 
+                                type="checkbox" 
+                                id="terms" 
+                                name="terms" 
+                                class="p-checkbox__input"
+                                required
+                                aria-describedby="terms-help"
+                            >
+                            <label for="terms" class="p-checkbox__label">
+                                J'accepte les conditions d'utilisation et la politique de confidentialité
+                            </label>
+                            <div class="form-help" id="terms-help">
+                                En vous inscrivant, vous acceptez nos conditions d'utilisation.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="register-response" aria-live="polite" aria-atomic="true"></div>
+
+                    <div class="p-button-group">
+                        <button 
+                            type="submit" 
+                            id="register-submit"
+                            class="p-button--positive"
+                            aria-describedby="register-help"
+                        >
+                            <span class="submit-text">Créer mon compte</span>
+                            <span class="submit-loading u-hide">
+                                <i class="p-icon--spinner u-animation--spin"></i>
+                                Inscription en cours...
+                            </span>
+                        </button>
+                        
+                        <button 
+                            type="button" 
+                            class="p-button--base"
+                            hx-get="/login.html"
+                            hx-target="#main-content"
+                            hx-push-url="true"
+                        >
+                            Déjà inscrit ? Se connecter
+                        </button>
+                    </div>
+                    
+                    <div class="form-help" id="register-help">
+                        L'inscription est gratuite et ne prend que quelques minutes.
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Validation en temps réel du mot de passe
+document.getElementById('password').addEventListener('input', function() {
+    const password = this.value;
+    const strength = calculatePasswordStrength(password);
+    
+    const strengthFill = document.querySelector('.strength-fill');
+    const strengthText = document.querySelector('.strength-text');
+    const strengthTime = document.querySelector('.strength-time');
+    
+    strengthFill.style.width = strength.percentage + '%';
+    strengthFill.className = 'strength-fill strength-' + getStrengthClass(strength.score);
+    
+    if (password.length === 0) {
+        strengthText.textContent = 'Saisissez un mot de passe';
+        strengthTime.textContent = '';
+    } else {
+        strengthText.textContent = getStrengthText(strength.score);
+        strengthTime.textContent = 'Temps estimé pour le craquer : ' + strength.timeToBreak;
+    }
+    
+    // Feedback pour l'accessibilité
+    if (strength.feedback.length > 0) {
+        const feedbackText = 'Améliorations suggérées : ' + strength.feedback.join(', ');
+        strengthText.setAttribute('aria-label', feedbackText);
+    }
+});
+
+// Validation de confirmation du mot de passe
+document.getElementById('password-confirm').addEventListener('input', function() {
+    const password = document.getElementById('password').value;
+    const confirm = this.value;
+    
+    if (confirm && password !== confirm) {
+        showFieldError(this, 'Les mots de passe ne correspondent pas.');
+    } else {
+        clearFieldError(this);
+    }
+});
+
+function getStrengthClass(score) {
+    if (score <= 1) return 'very-weak';
+    if (score <= 2) return 'weak';
+    if (score <= 3) return 'medium';
+    if (score <= 4) return 'strong';
+    return 'very-strong';
+}
+
+function getStrengthText(score) {
+    const texts = [
+        'Très faible',
+        'Faible', 
+        'Moyen',
+        'Fort',
+        'Très fort',
+        'Excellent'
+    ];
+    return texts[score] || 'Très faible';
+}
+
+// Gestion de la soumission du formulaire
+document.getElementById('register-form').addEventListener('htmx:beforeRequest', function() {
+    const submitBtn = document.getElementById('register-submit');
+    submitBtn.querySelector('.submit-text').classList.add('u-hide');
+    submitBtn.querySelector('.submit-loading').classList.remove('u-hide');
+    submitBtn.disabled = true;
+});
+
+document.getElementById('register-form').addEventListener('htmx:afterRequest', function() {
+    const submitBtn = document.getElementById('register-submit');
+    submitBtn.querySelector('.submit-text').classList.remove('u-hide');
+    submitBtn.querySelector('.submit-loading').classList.add('u-hide');
+    submitBtn.disabled = false;
+});
+</script>
+
+<style>
+.password-strength {
+    margin-top: 0.5rem;
+}
+
+.strength-bar {
+    height: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 0.25rem;
+}
+
+.strength-fill {
+    height: 100%;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-very-weak { background: #c7162b; }
+.strength-weak { background: #f99b11; }
+.strength-medium { background: #e5a30b; }
+.strength-strong { background: #0e8420; }
+.strength-very-strong { background: #0066cc; }
+
+.strength-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.strength-time {
+    font-size: 0.75rem;
+    color: var(--color-secondary);
+    margin-top: 0.25rem;
+}
+
+.submit-loading {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.p-icon--spinner {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.u-animation--spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>

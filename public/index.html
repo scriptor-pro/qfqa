@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QFQA - Quoi Faire Quand Aujourd'hui</title>
+    <meta name="description" content="App d'emploi du temps adaptée aux personnes TDAH, autistes ou les deux">
+    <meta name="theme-color" content="#0066cc">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="author" content="QFQA Team">
+    <link rel="canonical" href="https://qfqa.netlify.app/">
+
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+
+    <!-- Vanilla CSS pour l'accessibilité -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-framework@4.13.0/build/css/build.css">
+
+    <!-- Styles personnalisés -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/navigation.css">
+</head>
+<body class="has-sticky-nav">
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+    
+    <!-- Navigation responsive -->
+    <div id="navigation-placeholder"></div>
+    
+    <div class="l-application">
+
+        <main id="main-content" class="l-main with-nav" tabindex="-1">
+            <div class="row">
+                <div class="col-12">
+                    <div class="p-card">
+                        <div class="p-card__content">
+                            <h2 class="p-heading--2">Bienvenue sur QFQA</h2>
+                            <p class="p-text--default">
+                                Une application d'emploi du temps bienveillante, conçue spécialement pour les personnes TDAH, autistes ou les deux.
+                            </p>
+
+                            <div class="p-button-group" role="group" aria-label="Actions principales">
+                                <button
+                                    type="button"
+                                    class="p-button--positive"
+                                    hx-get="/register.html"
+                                    hx-target="#main-content"
+                                    hx-push-url="true"
+                                    aria-describedby="register-help"
+                                >
+                                    S'inscrire
+                                </button>
+                                <button
+                                    type="button"
+                                    class="p-button--neutral"
+                                    hx-get="/login.html"
+                                    hx-target="#main-content"
+                                    hx-push-url="true"
+                                    aria-describedby="login-help"
+                                >
+                                    Se connecter
+                                </button>
+                            </div>
+
+                            <div class="u-sv2">
+                                <p id="register-help" class="u-text--muted u-text--small">
+                                    Nouveau sur QFQA ? Créez votre compte pour commencer.
+                                </p>
+                                <p id="login-help" class="u-text--muted u-text--small">
+                                    Déjà inscrit ? Connectez-vous à votre espace.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="l-footer">
+            <div class="row">
+                <div class="col-12">
+                    <p class="u-text--muted u-text--small">
+                        QFQA - Une app bienveillante pour votre quotidien
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts personnalisés -->
+    <script src="js/load-navigation.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+/* Variables CSS pour l'accessibilité et la cohérence */
+:root {
+    --color-primary: #0066cc;
+    --color-secondary: #666666;
+    --color-success: #0e8420;
+    --color-warning: #cc6600;
+    --color-error: #c7162b;
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    --border-radius: 4px;
+    --focus-outline: 2px solid var(--color-primary);
+    --focus-offset: 2px;
+    --transition-fast: 0.15s ease;
+    --transition-medium: 0.3s ease;
+    --shadow-small: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Optimisations de base pour les performances */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+body {
+    font-display: swap;
+}
+
+/* Amélioration des performances pour les animations */
+.schedule-element, .floating-task, .drop-zone, .energy-option {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+}
+
+.schedule-element.dragging, .floating-task.dragging {
+    will-change: transform, opacity, box-shadow;
+    transform: translate3d(0, 0, 0);
+}
+
+/* Focus visible pour l'accessibilité */
+:focus, button:focus, input:focus, select:focus, textarea:focus, a:focus {
+    outline: var(--focus-outline);
+    outline-offset: var(--focus-offset);
+}
+
+/* Skip link pour l'accessibilité */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: var(--color-primary);
+    color: white;
+    padding: 8px 12px;
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    z-index: 1000;
+    font-weight: 500;
+    transition: top var(--transition-fast);
+}
+
+.skip-link:focus {
+    top: 6px;
+    outline: 2px solid white;
+    outline-offset: 2px;
+}
+
+/* Classe pour masquer visuellement mais garder accessible aux lecteurs d'écran */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Layout principal optimisé */
+.l-application {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.l-main {
+    flex-grow: 1;
+    padding: var(--spacing-lg) 0;
+}
+
+/* Navigation simplifiée */
+.l-navigation {
+    background: var(--color-primary);
+    color: white;
+    padding: var(--spacing-sm) 0;
+}
+
+.l-navigation h1 a {
+    color: white;
+    text-decoration: none;
+}
+
+.l-navigation h1 a:hover, .l-navigation h1 a:focus {
+    text-decoration: underline;
+}
+
+/* Footer simplifié */
+.l-footer {
+    background: #f7f7f7;
+    padding: var(--spacing-md) 0;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--color-secondary);
+}
+
+/* Formulaires optimisés */
+.form-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.form-label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: var(--spacing-sm);
+    border: 2px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+}
+
+.form-input:focus {
+    border-color: var(--color-primary);
+}
+
+.form-help {
+    font-size: 0.875rem;
+    color: var(--color-secondary);
+    margin-top: var(--spacing-xs);
+}
+
+/* Alertes et notifications */
+.alert {
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius);
+    margin-bottom: var(--spacing-md);
+}
+
+.alert-success { background: rgba(14, 132, 32, 0.1); color: var(--color-success); border-left: 3px solid var(--color-success); }
+.alert-warning { background: rgba(204, 102, 0, 0.1); color: var(--color-warning); border-left: 3px solid var(--color-warning); }
+.alert-error { background: rgba(199, 22, 43, 0.1); color: var(--color-error); border-left: 3px solid var(--color-error); }
+
+/* Éléments d'emploi du temps simplifiés */
+.schedule-element {
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: var(--border-radius);
+    padding: var(--spacing-sm);
+    margin: 2px 0;
+    cursor: move;
+    transition: all 0.2s ease;
+}
+
+.schedule-element:hover {
+    box-shadow: var(--shadow-medium);
+    transform: translateY(-1px);
+}
+
+.schedule-element.fixed {
+    background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+    border-color: var(--color-primary);
+    cursor: default;
+}
+
+.schedule-element.floating {
+    background: linear-gradient(135deg, #fff8e1 0%, #f1f8e9 100%);
+    border-color: var(--color-warning);
+}
+
+/* Indicateurs d'énergie optimisés */
+.energy-indicator {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.energy-level {
+    width: 12px;
+    height: 12px;
+    background: #e0e0e0;
+    border-radius: 2px;
+}
+
+.energy-level.filled { background: var(--color-success); }
+.energy-level.filled.medium { background: var(--color-warning); }
+.energy-level.filled.high { background: var(--color-error); }
+
+/* Page d'erreur 404 */
+.error-page {
+    text-align: center;
+    padding: var(--spacing-xl) 0;
+}
+
+.error-code {
+    font-size: 6rem;
+    font-weight: bold;
+    color: var(--color-primary);
+    line-height: 1;
+    margin-bottom: var(--spacing-sm);
+}
+
+.error-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    justify-content: center;
+    margin: var(--spacing-lg) 0;
+}
+
+/* Responsive design simplifié */
+@media (max-width: 768px) {
+    .error-code {
+        font-size: 4rem;
+    }
+    
+    .error-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .error-actions .p-button {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .schedule-element {
+        font-size: 0.875rem;
+        padding: var(--spacing-xs);
+    }
+}

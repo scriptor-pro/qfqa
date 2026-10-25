@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Emploi du temps adaptatif QFQA pour neurodivergents">
+    <meta name="theme-color" content="#0066cc">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <title>Mon emploi du temps - QFQA</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-framework@4.13.0/build/css/build.css">
+    <link rel="stylesheet" href="/css/main-optimized.css">
+    <link rel="stylesheet" href="/css/navigation.css">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body class="l-application has-sticky-nav">
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+    
+    <!-- Navigation responsive -->
+    <div id="navigation-placeholder"></div>
+
+    <main class="l-main with-nav" id="main-content" tabindex="-1">
+        <div class="schedule-container">
+            <!-- En-tête avec navigation -->
+            <div class="schedule-header">
+                <div class="date-navigation">
+                    <button class="date-nav-btn" hx-get="/api/schedule/previous-day" hx-target="#schedule-content" aria-label="Jour précédent">←</button>
+                    <div class="current-date">
+                        <h1 id="current-date">
+                            <span class="day-name">Aujourd'hui</span>
+                            <span class="date-number" hx-get="/api/schedule/current-date" hx-trigger="load" hx-target="this">7 septembre 2025</span>
+                        </h1>
+                    </div>
+                    <button class="date-nav-btn" hx-get="/api/schedule/next-day" hx-target="#schedule-content" aria-label="Jour suivant">→</button>
+                </div>
+
+                <!-- Indicateur d'énergie -->
+                <div class="daily-energy-status" hx-get="/api/user/energy/current" hx-trigger="load" hx-target="this">
+                    <button class="energy-update-btn" hx-post="/api/user/energy/update" hx-target="this" aria-label="Mettre à jour votre niveau d'énergie">
+                        <span class="energy-icon">⚡</span>
+                        <div class="energy-indicator">
+                            <div class="energy-level filled"></div>
+                            <div class="energy-level filled"></div>
+                            <div class="energy-level filled"></div>
+                            <div class="energy-level"></div>
+                            <div class="energy-level"></div>
+                        </div>
+                        <span class="energy-text">Énergie: Bonne</span>
+                    </button>
+                </div>
+
+                <!-- Actions rapides -->
+                <div class="quick-actions">
+                    <button class="quick-action-btn" hx-get="/setup.html" hx-target="#main-content" hx-push-url="true">⚙️ Configuration</button>
+                    <button class="quick-action-btn" hx-get="/api/schedule/suggestions" hx-target="#suggestions-modal">💡 Suggestions</button>
+                    <button class="quick-action-btn" hx-post="/api/schedule/optimize" hx-target="#schedule-content">🎯 Optimiser</button>
+                </div>
+            </div>
+
+            <!-- Contenu principal de l'emploi du temps -->
+            <div id="schedule-content" class="schedule-content">
+                <div class="schedule-grid">
+                    <!-- Colonne des heures -->
+                    <div class="hours-column">
+                        <div class="hour-slot" data-time="08:00">08:00</div>
+                        <div class="hour-slot" data-time="09:00">09:00</div>
+                        <div class="hour-slot" data-time="10:00">10:00</div>
+                        <div class="hour-slot" data-time="11:00">11:00</div>
+                        <div class="hour-slot" data-time="12:00">12:00</div>
+                        <div class="hour-slot" data-time="13:00">13:00</div>
+                        <div class="hour-slot" data-time="14:00">14:00</div>
+                        <div class="hour-slot" data-time="15:00">15:00</div>
+                        <div class="hour-slot" data-time="16:00">16:00</div>
+                        <div class="hour-slot" data-time="17:00">17:00</div>
+                        <div class="hour-slot" data-time="18:00">18:00</div>
+                        <div class="hour-slot" data-time="19:00">19:00</div>
+                    </div>
+
+                    <!-- Colonne des activités planifiées -->
+                    <div class="activities-column" 
+                         hx-get="/api/schedule/current" 
+                         hx-trigger="load"
+                         hx-target="this">
+                        <!-- Chargement dynamique des activités -->
+                        <div class="loading-placeholder">Chargement de votre emploi du temps...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tâches flottantes -->
+            <div class="floating-tasks-panel">
+                <h2 class="p-heading--3">Tâches à planifier</h2>
+                <div class="floating-tasks-container" 
+                     hx-get="/api/schedule/floating-tasks" 
+                     hx-trigger="load"
+                     hx-target="this">
+                    <!-- Exemple de tâches flottantes -->
+                    <div class="floating-task" draggable="true" data-id="task-1" tabindex="0" role="button" aria-label="Faire les courses, 45 minutes, priorité moyenne">
+                        <div class="task-header">
+                            <h3 class="task-name">Faire les courses</h3>
+                            <div class="task-meta">
+                                <span class="task-duration">45 min</span>
+                                <span class="task-priority medium">Priorité moyenne</span>
+                            </div>
+                        </div>
+                        <div class="task-sensory">
+                            <div class="sensory-total">12/100</div>
+                            <div class="energy-requirement low">Énergie requise: Faible</div>
+                        </div>
+                    </div>
+
+                    <div class="floating-task" draggable="true" data-id="task-2" tabindex="0" role="button" aria-label="Appeler maman, 30 minutes, priorité élevée">
+                        <div class="task-header">
+                            <h3 class="task-name">Appeler maman</h3>
+                            <div class="task-meta">
+                                <span class="task-duration">30 min</span>
+                                <span class="task-priority high">Priorité élevée</span>
+                            </div>
+                        </div>
+                        <div class="task-sensory">
+                            <div class="sensory-total">8/100</div>
+                            <div class="energy-requirement low">Énergie requise: Faible</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal pour suggestions (chargé dynamiquement) -->
+        <div id="suggestions-modal"></div>
+    </main>
+
+    <footer class="l-footer" role="contentinfo">
+        <div class="row">
+            <div class="col-12">
+                <p>&copy; 2024 QFQA - Organiser son quotidien avec bienveillance</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/load-navigation.js"></script>
+    <script src="/js/navigation.js"></script>
+    <script src="/js/main-optimized.js"></script>
+    
+    <script>
+        // Fonctionnalité drag & drop simplifiée
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDragAndDrop();
+        });
+        
+        function initializeDragAndDrop() {
+            // Éléments draggables
+            document.querySelectorAll('.floating-task').forEach(task => {
+                task.addEventListener('dragstart', handleDragStart);
+                task.addEventListener('keydown', handleKeyboardDrag);
+            });
+            
+            // Zones de dépôt
+            document.querySelectorAll('.hour-slot').forEach(slot => {
+                slot.addEventListener('dragover', handleDragOver);
+                slot.addEventListener('drop', handleDrop);
+            });
+        }
+        
+        function handleDragStart(e) {
+            e.dataTransfer.setData('text/plain', e.target.dataset.id);
+            e.target.classList.add('dragging');
+        }
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+        
+        function handleDrop(e) {
+            e.preventDefault();
+            const taskId = e.dataTransfer.getData('text/plain');
+            const timeSlot = e.currentTarget.dataset.time;
+            
+            // Appel API pour planifier la tâche
+            htmx.ajax('POST', '/api/schedule/update-task', {
+                values: { task_id: taskId, time_slot: timeSlot },
+                target: '#schedule-content'
+            });
+            
+            e.currentTarget.classList.remove('drag-over');
+            document.querySelector('.dragging')?.classList.remove('dragging');
+        }
+        
+        function handleKeyboardDrag(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                // Logique de planification au clavier
+            }
+        }
+    </script>
+</body>
+</html>

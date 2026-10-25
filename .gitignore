@@ -1,0 +1,3 @@
+# Local Netlify folder
+.netlify
+go*.linux-amd64.tar.gz
