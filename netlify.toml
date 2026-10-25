@@ -1,0 +1,53 @@
+[build]
+  command = "npm run build"
+  publish = "public"
+  
+[build.environment]
+  NODE_VERSION = "18"
+
+# Proxy API vers le backend optimisé
+[[redirects]]
+  from = "/api/*"
+  to = "https://qfqa-backend-optimized.render.com/api/:splat"
+  status = 200
+  force = true
+
+# En-têtes de sécurité optimisés
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://qfqa-backend-optimized.render.com;"
+
+# Cache agressif pour les assets optimisés (1 an)
+[[headers]]
+  for = "/css/* /js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache pour les polices et images (30 jours)
+[[headers]]
+  for = "/fonts/* /img/* /icons/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+# Préchargement des ressources critiques
+[[headers]]
+  for = "/"
+  [headers.values]
+    Link = "</css/vanilla-custom.css>; rel=preload; as=style, </css/qfqa-optimized.css>; rel=preload; as=style, </js/main-optimized.js>; rel=preload; as=script"
+
+# Compression Brotli pour tous les assets texte
+[[headers]]
+  for = "*.css *.js *.html *.json *.xml *.svg"
+  [headers.values]
+    Content-Encoding = "br"
+
+# SPA fallback (doit être en dernier)
+[[redirects]]
+  from = "/*"
+  to = "/index-ultra-optimized.html"
+  status = 200

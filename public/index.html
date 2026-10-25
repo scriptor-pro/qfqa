@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QFQA - Bientôt Disponible</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            padding: 2rem;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .logo {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #e0e7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: #f0f4ff;
+            font-weight: 300;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 3rem;
+            color: #e8edff;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .coming-soon {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.3);
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+        }
+
+        .notify-form {
+            display: flex;
+            max-width: 400px;
+            margin: 0 auto 2rem;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            padding: 0.5rem;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .notify-input {
+            flex: 1;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            background: transparent;
+            color: white;
+            font-size: 1rem;
+            border-radius: 50px;
+            outline: none;
+        }
+
+        .notify-input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .notify-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+
+        .notify-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .notify-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .social-links {
+            margin-top: 3rem;
+        }
+
+        .social-link {
+            display: inline-block;
+            margin: 0 1rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: white;
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* Classe pour masquer visuellement mais garder accessible aux lecteurs d'écran */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Styles de focus accessibles */
+        .notify-input:focus,
+        .notify-btn:focus,
+        .social-link:focus {
+            outline: 3px solid #ffd700;
+            outline-offset: 2px;
+        }
+
+        /* Respecter les préférences utilisateur pour les animations */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .particle {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .logo {
+                font-size: 3rem;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
+            .notify-form {
+                flex-direction: column;
+                max-width: 300px;
+            }
+            
+            .notify-input {
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" aria-hidden="true"></div>
+    
+    <main class="container">
+        <header>
+            <h1 class="logo">QFQA</h1>
+            <p class="tagline">Quelque chose d'extraordinaire arrive...</p>
+        </header>
+        
+        <section aria-labelledby="description-heading">
+            <h2 id="description-heading" class="sr-only">Description du projet</h2>
+            <p class="description">
+                Une nouvelle plateforme innovante qui révolutionnera votre expérience. 
+                Restez connecté pour découvrir ce qui vous attend.
+            </p>
+        </section>
+        
+        <div class="coming-soon" role="status" aria-live="polite">
+            Bientôt Disponible
+        </div>
+        
+        <section aria-labelledby="notification-heading">
+            <h2 id="notification-heading" class="sr-only">Notifications de lancement</h2>
+            <form class="notify-form" name="newsletter" method="POST" data-netlify="true" onsubmit="handleNotify(event)">
+                <input type="hidden" name="form-name" value="newsletter">
+                <label for="email-input" class="sr-only">Votre adresse email pour être notifié du lancement</label>
+                <input 
+                    id="email-input"
+                    name="email"
+                    type="email" 
+                    class="notify-input" 
+                    placeholder="Votre adresse email"
+                    aria-describedby="email-help"
+                    required
+                >
+                <button type="submit" class="notify-btn">Me notifier</button>
+                <div id="email-help" class="sr-only">Nous vous enverrons un email quand QFQA sera disponible</div>
+            </form>
+        </section>
+        
+        <nav aria-label="Liens de contact">
+            <div class="social-links">
+                <a href="mailto:contact@qfqa.eu" class="social-link" aria-label="Nous contacter par email">📧</a>
+                <a href="https://qfqa.eu" class="social-link" aria-label="Visiter notre site web">🌐</a>
+            </div>
+        </nav>
+    </main>
+
+    <script>
+        // Créer des particules flottantes
+        function createParticles() {
+            const particlesContainer = document.querySelector('.particles');
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 4 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Gérer la soumission du formulaire de notification
+        async function handleNotify(event) {
+            event.preventDefault();
+            const email = event.target.querySelector('.notify-input').value;
+            const submitBtn = event.target.querySelector('.notify-btn');
+            const originalText = submitBtn.textContent;
+            
+            // Désactiver le bouton pendant l'envoi
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Envoi en cours...';
+            
+            try {
+                // Envoyer l'email via Netlify Forms
+                const formData = new FormData();
+                formData.append('form-name', 'newsletter');
+                formData.append('email', email);
+                
+                const response = await fetch('/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(formData).toString()
+                });
+                
+                if (response.ok) {
+                    alert('Merci ! Nous vous notifierons dès que QFQA sera disponible.');
+                    event.target.reset();
+                } else {
+                    throw new Error('Erreur réseau');
+                }
+            } catch (error) {
+                alert('Erreur lors de l\'inscription. Veuillez réessayer.');
+            } finally {
+                // Réactiver le bouton
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        }
+        
+        // Initialiser les particules au chargement
+        document.addEventListener('DOMContentLoaded', createParticles);
+        
+        // Effet de typing pour le titre
+        function typeWriter(element, text, speed = 100) {
+            let i = 0;
+            element.innerHTML = '';
+            function typing() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(typing, speed);
+                }
+            }
+            typing();
+        }
+        
+        // Animation supplémentaire au chargement
+        window.addEventListener('load', () => {
+            const logo = document.querySelector('.logo');
+            const originalText = logo.textContent;
+            setTimeout(() => {
+                typeWriter(logo, originalText, 200);
+            }, 500);
+        });
+    </script>
+</body>
+</html>

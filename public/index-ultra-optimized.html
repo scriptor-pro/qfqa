@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QFQA - Quoi Faire Quand Aujourd'hui</title>
+    <meta name="description" content="App d'emploi du temps adaptée aux personnes TDAH, autistes ou les deux">
+    <meta name="theme-color" content="#0066cc">
+    <meta name="author" content="QFQA Team">
+    <link rel="canonical" href="https://qfqa.netlify.app/">
+
+    <!-- Styles locaux optimisés -->
+    <link rel="stylesheet" href="/css/vanilla-custom.css">
+    <link rel="stylesheet" href="/css/qfqa-optimized.css">
+    
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body class="l-application">
+    <div id="main-content" role="main" tabindex="-1">
+        <header class="l-navigation p-navigation" role="banner">
+            <div class="row">
+                <div class="col-12">
+                    <div class="p-navigation__header">
+                        <h1 class="p-navigation__brand">
+                            <a href="/" class="p-navigation__link">🧠 QFQA</a>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="l-main with-nav" id="main-content" tabindex="-1">
+            <div class="row">
+                <div class="col-12 col-medium-8 col-start-large-3">
+                    <div class="hero-section">
+                        <div class="p-card p-card--highlighted">
+                            <div class="p-card__header">
+                                <h1 class="p-heading--1">Quoi Faire Quand Aujourd'hui ?</h1>
+                                <p class="p-text--large">
+                                    L'emploi du temps qui s'adapte à votre neurotype et respecte votre énergie du jour.
+                                </p>
+                            </div>
+                            
+                            <div class="p-card__content">
+                                <div class="neurotype-info">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="feature-item">
+                                                <h3 class="p-heading--4">🧠 TDAH</h3>
+                                                <p class="p-text--small">Gestion de l'attention et des priorités</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="feature-item">
+                                                <h3 class="p-heading--4">🌈 Autisme</h3>
+                                                <p class="p-text--small">Adaptation sensorielle personnalisée</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="feature-item">
+                                                <h3 class="p-heading--4">⚡ Énergie</h3>
+                                                <p class="p-text--small">Planification selon votre rythme</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="cta-actions">
+                                    <div class="p-button-group">
+                                        <button 
+                                            class="p-button--positive p-button--large"
+                                            hx-get="/register.html"
+                                            hx-target="#main-content"
+                                            hx-push-url="true"
+                                        >
+                                            ✨ Créer mon compte
+                                        </button>
+                                        
+                                        <button 
+                                            class="p-button--base p-button--large"
+                                            hx-get="/login.html"
+                                            hx-target="#main-content"
+                                            hx-push-url="true"
+                                        >
+                                            🔑 Se connecter
+                                        </button>
+                                    </div>
+
+                                    <div class="demo-section u-sv2">
+                                        <div class="p-notification--information">
+                                            <div class="p-notification__content">
+                                                <h4 class="p-notification__title">Essai gratuit</h4>
+                                                <p class="p-notification__message">
+                                                    Découvrez QFQA avec des données d'exemple, sans inscription.
+                                                </p>
+                                                <button 
+                                                    class="p-button--neutral"
+                                                    hx-post="/api/demo-login"
+                                                    hx-target="#main-content"
+                                                >
+                                                    🚀 Mode démo
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section fonctionnalités -->
+                        <div class="features-grid u-sv3">
+                            <div class="row">
+                                <div class="col-6 col-medium-3">
+                                    <div class="p-card">
+                                        <div class="p-card__content">
+                                            <h3 class="p-heading--4">📊 Échelle sensorielle</h3>
+                                            <p class="p-text--small">
+                                                Évaluez l'impact sensoriel de chaque activité sur 20 niveaux.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-6 col-medium-3">
+                                    <div class="p-card">
+                                        <div class="p-card__content">
+                                            <h3 class="p-heading--4">🎯 IA adaptative</h3>
+                                            <p class="p-text--small">
+                                                Suggestions intelligentes basées sur votre profil.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-6 col-medium-3">
+                                    <div class="p-card">
+                                        <div class="p-card__content">
+                                            <h3 class="p-heading--4">♿ Accessible</h3>
+                                            <p class="p-text--small">
+                                                Interface WCAG 2.1 AA pour tous les utilisateurs.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-6 col-medium-3">
+                                    <div class="p-card">
+                                        <div class="p-card__content">
+                                            <h3 class="p-heading--4">🔄 Drag & Drop</h3>
+                                            <p class="p-text--small">
+                                                Réorganisez votre emploi du temps facilement.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="l-footer p-footer" role="contentinfo">
+            <div class="row">
+                <div class="col-12">
+                    <div class="p-footer__content">
+                        <p>&copy; 2024 QFQA - Organiser son quotidien avec bienveillance</p>
+                        <p class="p-text--small u-text--muted">
+                            Conçu avec ❤️ pour la communauté neurodivergente
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Script optimisé -->
+    <script src="/js/load-navigation.js"></script>
+    <script src="/js/navigation.js"></script>
+    <script src="/js/main-optimized.js"></script>
+</body>
+</html>

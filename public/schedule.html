@@ -1,0 +1,1167 @@
+<div class="schedule-container">
+    <!-- En-tête avec informations du jour -->
+    <div class="schedule-header">
+        <div class="date-navigation">
+            <button class="date-nav-btn" hx-get="/api/schedule/previous-day" hx-target="#schedule-content" aria-label="Jour précédent">
+                ←
+            </button>
+            <div class="current-date">
+                <h1 class="date-display" id="current-date">
+                    <span class="day-name">Aujourd'hui</span>
+                    <span class="date-number">7 septembre 2025</span>
+                </h1>
+            </div>
+            <button class="date-nav-btn" hx-get="/api/schedule/next-day" hx-target="#schedule-content" aria-label="Jour suivant">
+                →
+            </button>
+        </div>
+
+        <!-- Indicateur d'énergie du jour -->
+        <div class="daily-energy-status">
+            <div class="energy-header">
+                <h2 class="energy-title">Votre énergie aujourd'hui</h2>
+                <button class="energy-update-btn" onclick="showEnergyModal()" aria-label="Mettre à jour votre niveau d'énergie">
+                    ⚡ Ajuster
+                </button>
+            </div>
+            <div class="energy-display" id="current-energy">
+                <div class="energy-indicator">
+                    <div class="energy-bars" id="daily-energy-bars">
+                        <div class="energy-level filled"></div>
+                        <div class="energy-level filled"></div>
+                        <div class="energy-level filled"></div>
+                        <div class="energy-level"></div>
+                        <div class="energy-level"></div>
+                    </div>
+                    <span class="energy-text">Énergie modérée (3/5)</span>
+                </div>
+                <div class="energy-advice" id="energy-advice">
+                    Privilégiez les tâches importantes ce matin. Prévoyez des pauses régulières.
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions rapides -->
+        <div class="quick-actions">
+            <button class="quick-action-btn" hx-get="/setup.html" hx-target="#main-content" hx-push-url="true">
+                ➕ Ajouter un élément
+            </button>
+            <button class="quick-action-btn" onclick="showTaskSuggestions()">
+                💡 Suggestions
+            </button>
+            <button class="quick-action-btn" onclick="optimizeSchedule()">
+                🎯 Optimiser
+            </button>
+        </div>
+    </div>
+
+    <!-- Contenu principal : grille horaire + tâches flottantes -->
+    <div class="schedule-main" id="schedule-content">
+        <div class="schedule-layout">
+            <!-- Colonne des heures -->
+            <div class="time-column">
+                <div class="time-header">Horaires</div>
+                <div class="time-slots">
+                    <!-- Généré dynamiquement de 6h à 23h -->
+                    <div class="time-slot" data-hour="6">06:00</div>
+                    <div class="time-slot" data-hour="7">07:00</div>
+                    <div class="time-slot" data-hour="8">08:00</div>
+                    <div class="time-slot" data-hour="9">09:00</div>
+                    <div class="time-slot" data-hour="10">10:00</div>
+                    <div class="time-slot" data-hour="11">11:00</div>
+                    <div class="time-slot" data-hour="12">12:00</div>
+                    <div class="time-slot" data-hour="13">13:00</div>
+                    <div class="time-slot" data-hour="14">14:00</div>
+                    <div class="time-slot" data-hour="15">15:00</div>
+                    <div class="time-slot" data-hour="16">16:00</div>
+                    <div class="time-slot" data-hour="17">17:00</div>
+                    <div class="time-slot" data-hour="18">18:00</div>
+                    <div class="time-slot" data-hour="19">19:00</div>
+                    <div class="time-slot" data-hour="20">20:00</div>
+                    <div class="time-slot" data-hour="21">21:00</div>
+                    <div class="time-slot" data-hour="22">22:00</div>
+                    <div class="time-slot" data-hour="23">23:00</div>
+                </div>
+            </div>
+
+            <!-- Colonne principale avec les créneaux -->
+            <div class="main-schedule">
+                <div class="schedule-grid-header">
+                    <h2>Emploi du temps</h2>
+                    <div class="view-controls">
+                        <button class="view-btn active" data-view="day">Jour</button>
+                        <button class="view-btn" data-view="week">Semaine</button>
+                    </div>
+                </div>
+
+                <div class="schedule-grid" id="schedule-grid">
+                    <!-- Créneaux horaires avec zones de drop -->
+                    <div class="schedule-hour" data-hour="6">
+                        <div class="hour-marker">06:00</div>
+                        <div class="hour-content">
+                            <div class="drop-zone" 
+                                 data-time-slot="06:00" 
+                                 ondrop="handleDrop(event)" 
+                                 ondragover="handleDragOver(event)"
+                                 ondragleave="handleDragLeave(event)">
+                                <div class="drop-hint">Glissez vos tâches ici</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-hour" data-hour="7">
+                        <div class="hour-marker">07:00</div>
+                        <div class="hour-content">
+                            <div class="drop-zone" 
+                                 data-time-slot="07:00" 
+                                 ondrop="handleDrop(event)" 
+                                 ondragover="handleDragOver(event)"
+                                 ondragleave="handleDragLeave(event)">
+                                <div class="drop-hint">Glissez vos tâches ici</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-hour" data-hour="8">
+                        <div class="hour-marker">08:00</div>
+                        <div class="hour-content">
+                            <div class="drop-zone" 
+                                 data-time-slot="08:00" 
+                                 ondrop="handleDrop(event)" 
+                                 ondragover="handleDragOver(event)"
+                                 ondragleave="handleDragLeave(event)">
+                                <!-- Exemple d'élément fixe -->
+                                <div class="schedule-element fixed" data-id="fixed-1">
+                                    <div class="element-header">
+                                        <h3 class="element-title">Rendez-vous médecin</h3>
+                                        <div class="element-time">08:00 - 09:00</div>
+                                    </div>
+                                    <div class="element-details">
+                                        <div class="element-location">📍 Cabinet Dr. Martin</div>
+                                        <div class="element-energy">
+                                            <span class="energy-label">Énergie:</span>
+                                            <div class="energy-mini-bars">
+                                                <div class="mini-bar filled medium"></div>
+                                                <div class="mini-bar filled medium"></div>
+                                                <div class="mini-bar filled medium"></div>
+                                                <div class="mini-bar"></div>
+                                                <div class="mini-bar"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-hour" data-hour="9">
+                        <div class="hour-marker">09:00</div>
+                        <div class="hour-content">
+                            <div class="drop-zone" 
+                                 data-time-slot="09:00" 
+                                 ondrop="handleDrop(event)" 
+                                 ondragover="handleDragOver(event)"
+                                 ondragleave="handleDragLeave(event)">
+                                <div class="drop-hint">Glissez vos tâches ici</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-hour" data-hour="10">
+                        <div class="hour-marker">10:00</div>
+                        <div class="hour-content">
+                            <div class="drop-zone" 
+                                 data-time-slot="10:00" 
+                                 ondrop="handleDrop(event)" 
+                                 ondragover="handleDragOver(event)"
+                                 ondragleave="handleDragLeave(event)">
+                                <!-- Exemple d'élément flottant placé -->
+                                <div class="schedule-element floating placed" 
+                                     data-id="floating-1"
+                                     draggable="true"
+                                     ondragstart="handleDragStart(event)"
+                                     ondragend="handleDragEnd(event)"
+                                     tabindex="0"
+                                     role="button"
+                                     aria-label="Faire les courses, durée 45 minutes, appuyez sur Espace pour déplacer">
+                                    <div class="element-header">
+                                        <h3 class="element-title">Faire les courses</h3>
+                                        <div class="element-duration">45 min</div>
+                                    </div>
+                                    <div class="element-details">
+                                        <div class="element-category">🛒 Personnel</div>
+                                        <div class="element-priority priority-medium">Priorité moyenne</div>
+                                        <div class="element-sensory">
+                                            <span class="sensory-score">Charge sensorielle: 35/100</span>
+                                            <div class="sensory-breakdown">
+                                                🔊 8 👁️ 12 ✋ 6 👃 7 👅 2
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="element-action-btn" onclick="editElement('floating-1')" aria-label="Modifier cette tâche">✏️</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Continuation des créneaux horaires -->
+                    <div class="schedule-hour" data-hour="11">
+                        <div class="hour-marker">11:00</div>
+                        <div class="hour-content">
+                            <div class="drop-zone" 
+                                 data-time-slot="11:00" 
+                                 ondrop="handleDrop(event)" 
+                                 ondragover="handleDragOver(event)"
+                                 ondragleave="handleDragLeave(event)">
+                                <div class="drop-hint">Glissez vos tâches ici</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-hour" data-hour="12">
+                        <div class="hour-marker">12:00</div>
+                        <div class="hour-content">
+                            <div class="drop-zone" 
+                                 data-time-slot="12:00" 
+                                 ondrop="handleDrop(event)" 
+                                 ondragover="handleDragOver(event)"
+                                 ondragleave="handleDragLeave(event)">
+                                <div class="drop-hint">Glissez vos tâches ici</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-hour" data-hour="13">
+                        <div class="hour-marker">13:00</div>
+                        <div class="hour-content">
+                            <div class="drop-zone" 
+                                 data-time-slot="13:00" 
+                                 ondrop="handleDrop(event)" 
+                                 ondragover="handleDragOver(event)"
+                                 ondragleave="handleDragLeave(event)">
+                                <div class="drop-hint">Glissez vos tâches ici</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-hour" data-hour="14">
+                        <div class="hour-marker">14:00</div>
+                        <div class="hour-content">
+                            <div class="drop-zone" 
+                                 data-time-slot="14:00" 
+                                 ondrop="handleDrop(event)" 
+                                 ondragover="handleDragOver(event)"
+                                 ondragleave="handleDragLeave(event)">
+                                <div class="drop-hint">Glissez vos tâches ici</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-hour" data-hour="15">
+                        <div class="hour-marker">15:00</div>
+                        <div class="hour-content">
+                            <div class="drop-zone" 
+                                 data-time-slot="15:00" 
+                                 ondrop="handleDrop(event)" 
+                                 ondragover="handleDragOver(event)"
+                                 ondragleave="handleDragLeave(event)">
+                                <div class="drop-hint">Glissez vos tâches ici</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-hour" data-hour="16">
+                        <div class="hour-marker">16:00</div>
+                        <div class="hour-content">
+                            <div class="drop-zone" 
+                                 data-time-slot="16:00" 
+                                 ondrop="handleDrop(event)" 
+                                 ondragover="handleDragOver(event)"
+                                 ondragleave="handleDragLeave(event)">
+                                <div class="drop-hint">Glissez vos tâches ici</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-hour" data-hour="17">
+                        <div class="hour-marker">17:00</div>
+                        <div class="hour-content">
+                            <div class="drop-zone" 
+                                 data-time-slot="17:00" 
+                                 ondrop="handleDrop(event)" 
+                                 ondragover="handleDragOver(event)"
+                                 ondragleave="handleDragLeave(event)">
+                                <div class="drop-hint">Glissez vos tâches ici</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-hour" data-hour="18">
+                        <div class="hour-marker">18:00</div>
+                        <div class="hour-content">
+                            <div class="drop-zone" 
+                                 data-time-slot="18:00" 
+                                 ondrop="handleDrop(event)" 
+                                 ondragover="handleDragOver(event)"
+                                 ondragleave="handleDragLeave(event)">
+                                <div class="drop-hint">Glissez vos tâches ici</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-hour" data-hour="19">
+                        <div class="hour-marker">19:00</div>
+                        <div class="hour-content">
+                            <div class="drop-zone" 
+                                 data-time-slot="19:00" 
+                                 ondrop="handleDrop(event)" 
+                                 ondragover="handleDragOver(event)"
+                                 ondragleave="handleDragLeave(event)">
+                                <div class="drop-hint">Glissez vos tâches ici</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-hour" data-hour="20">
+                        <div class="hour-marker">20:00</div>
+                        <div class="hour-content">
+                            <div class="drop-zone" 
+                                 data-time-slot="20:00" 
+                                 ondrop="handleDrop(event)" 
+                                 ondragover="handleDragOver(event)"
+                                 ondragleave="handleDragLeave(event)">
+                                <div class="drop-hint">Glissez vos tâches ici</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-hour" data-hour="21">
+                        <div class="hour-marker">21:00</div>
+                        <div class="hour-content">
+                            <div class="drop-zone" 
+                                 data-time-slot="21:00" 
+                                 ondrop="handleDrop(event)" 
+                                 ondragover="handleDragOver(event)"
+                                 ondragleave="handleDragLeave(event)">
+                                <div class="drop-hint">Glissez vos tâches ici</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-hour" data-hour="22">
+                        <div class="hour-marker">22:00</div>
+                        <div class="hour-content">
+                            <div class="drop-zone" 
+                                 data-time-slot="22:00" 
+                                 ondrop="handleDrop(event)" 
+                                 ondragover="handleDragOver(event)"
+                                 ondragleave="handleDragLeave(event)">
+                                <div class="drop-hint">Glissez vos tâches ici</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-hour" data-hour="23">
+                        <div class="hour-marker">23:00</div>
+                        <div class="hour-content">
+                            <div class="drop-zone" 
+                                 data-time-slot="23:00" 
+                                 ondrop="handleDrop(event)" 
+                                 ondragover="handleDragOver(event)"
+                                 ondragleave="handleDragLeave(event)">
+                                <div class="drop-hint">Glissez vos tâches ici</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Colonne des tâches flottantes -->
+            <div class="floating-tasks-sidebar">
+                <div class="sidebar-header">
+                    <h3>Tâches à planifier</h3>
+                    <div class="tasks-filter">
+                        <select id="task-filter" onchange="filterTasks(this.value)">
+                            <option value="all">Toutes</option>
+                            <option value="urgent">Urgentes</option>
+                            <option value="today">Aujourd'hui</option>
+                            <option value="low-energy">Faible énergie</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="floating-tasks-list" 
+                     id="floating-tasks"
+                     hx-get="/api/schedule/floating-tasks" 
+                     hx-trigger="load"
+                     hx-target="this">
+                    <!-- Exemples de tâches flottantes -->
+                    <div class="floating-task" 
+                         data-id="task-1"
+                         data-duration="30"
+                         data-energy="2"
+                         data-priority="high"
+                         draggable="true"
+                         ondragstart="handleTaskDragStart(event)"
+                         ondragend="handleTaskDragEnd(event)"
+                         tabindex="0"
+                         role="button"
+                         aria-label="Appeler maman, 30 minutes, priorité élevée">
+                        <div class="task-header">
+                            <h4 class="task-title">📞 Appeler maman</h4>
+                            <div class="task-priority priority-high">!</div>
+                        </div>
+                        <div class="task-details">
+                            <div class="task-duration">⏱️ 30 min</div>
+                            <div class="task-energy">
+                                <div class="energy-mini-bars">
+                                    <div class="mini-bar filled low"></div>
+                                    <div class="mini-bar filled low"></div>
+                                    <div class="mini-bar"></div>
+                                    <div class="mini-bar"></div>
+                                    <div class="mini-bar"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="task-sensory">
+                            <div class="sensory-mini">🔊 3 👁️ 2 ✋ 1 👃 1 👅 1</div>
+                            <div class="sensory-total">Total: 8/100</div>
+                        </div>
+                    </div>
+
+                    <div class="floating-task" 
+                         data-id="task-2"
+                         data-duration="90"
+                         data-energy="4"
+                         data-priority="medium"
+                         draggable="true"
+                         ondragstart="handleTaskDragStart(event)"
+                         ondragend="handleTaskDragEnd(event)"
+                         tabindex="0"
+                         role="button"
+                         aria-label="Ranger le bureau, 90 minutes, priorité moyenne">
+                        <div class="task-header">
+                            <h4 class="task-title">🗂️ Ranger le bureau</h4>
+                            <div class="task-priority priority-medium">•</div>
+                        </div>
+                        <div class="task-details">
+                            <div class="task-duration">⏱️ 1h30</div>
+                            <div class="task-energy">
+                                <div class="energy-mini-bars">
+                                    <div class="mini-bar filled medium"></div>
+                                    <div class="mini-bar filled medium"></div>
+                                    <div class="mini-bar filled medium"></div>
+                                    <div class="mini-bar filled medium"></div>
+                                    <div class="mini-bar"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="task-sensory">
+                            <div class="sensory-mini">🔊 5 👁️ 8 ✋ 12 👃 6 👅 1</div>
+                            <div class="sensory-total">Total: 32/100</div>
+                        </div>
+                        <div class="task-deadline">📅 Dans 2 jours</div>
+                    </div>
+
+                    <div class="floating-task" 
+                         data-id="task-3"
+                         data-duration="15"
+                         data-energy="1"
+                         data-priority="low"
+                         draggable="true"
+                         ondragstart="handleTaskDragStart(event)"
+                         ondragend="handleTaskDragEnd(event)"
+                         tabindex="0"
+                         role="button"
+                         aria-label="Arroser les plantes, 15 minutes, priorité faible">
+                        <div class="task-header">
+                            <h4 class="task-title">🌱 Arroser les plantes</h4>
+                            <div class="task-priority priority-low">-</div>
+                        </div>
+                        <div class="task-details">
+                            <div class="task-duration">⏱️ 15 min</div>
+                            <div class="task-energy">
+                                <div class="energy-mini-bars">
+                                    <div class="mini-bar filled low"></div>
+                                    <div class="mini-bar"></div>
+                                    <div class="mini-bar"></div>
+                                    <div class="mini-bar"></div>
+                                    <div class="mini-bar"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="task-sensory">
+                            <div class="sensory-mini">🔊 2 👁️ 3 ✋ 4 👃 2 👅 1</div>
+                            <div class="sensory-total">Total: 12/100</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zone de suggestions intelligentes -->
+                <div class="smart-suggestions" id="suggestions">
+                    <h4>💡 Suggestions</h4>
+                    <div class="suggestion-item">
+                        <div class="suggestion-text">
+                            Votre énergie est modérée. Placez "Appeler maman" maintenant pendant que vous êtes disponible.
+                        </div>
+                        <button class="suggestion-action" onclick="applySuggestion('task-1', '11:00')">
+                            Appliquer
+                        </button>
+                    </div>
+                    <div class="suggestion-item">
+                        <div class="suggestion-text">
+                            "Ranger le bureau" conviendrait mieux cet après-midi quand votre énergie sera plus élevée.
+                        </div>
+                        <button class="suggestion-action" onclick="applySuggestion('task-2', '15:00')">
+                            Appliquer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal pour ajustement d'énergie -->
+<div class="modal" id="energy-modal" aria-hidden="true" role="dialog" aria-labelledby="energy-modal-title">
+    <div class="modal-backdrop" onclick="closeEnergyModal()"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="energy-modal-title">Ajuster votre niveau d'énergie</h3>
+            <button class="modal-close" onclick="closeEnergyModal()" aria-label="Fermer">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Comment vous sentez-vous maintenant ?</p>
+            <div class="energy-selector">
+                <div class="energy-options">
+                    <label class="energy-option">
+                        <input type="radio" name="current_energy" value="1">
+                        <span class="energy-visual low">●</span>
+                        <span>Épuisé</span>
+                    </label>
+                    <label class="energy-option">
+                        <input type="radio" name="current_energy" value="2">
+                        <span class="energy-visual low">●●</span>
+                        <span>Fatigué</span>
+                    </label>
+                    <label class="energy-option">
+                        <input type="radio" name="current_energy" value="3" checked>
+                        <span class="energy-visual medium">●●●</span>
+                        <span>Modéré</span>
+                    </label>
+                    <label class="energy-option">
+                        <input type="radio" name="current_energy" value="4">
+                        <span class="energy-visual high">●●●●</span>
+                        <span>En forme</span>
+                    </label>
+                    <label class="energy-option">
+                        <input type="radio" name="current_energy" value="5">
+                        <span class="energy-visual high">●●●●●</span>
+                        <span>Plein d'énergie</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="p-button--positive" onclick="updateEnergy()">
+                Mettre à jour
+            </button>
+            <button class="p-button--base" onclick="closeEnergyModal()">
+                Annuler
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// État global de l'application
+let currentEnergy = 3;
+let draggedElement = null;
+let keyboardDragMode = false;
+let currentKeyboardTarget = null;
+
+// Initialisation
+document.addEventListener('DOMContentLoaded', function() {
+    initializeSchedule();
+    loadScheduleData();
+    setupKeyboardNavigation();
+    updateDateDisplay();
+});
+
+function initializeSchedule() {
+    // Mise à jour de la date
+    const today = new Date();
+    document.getElementById('current-date').querySelector('.date-number').textContent = 
+        today.toLocaleDateString('fr-FR', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+    
+    // Chargement des données via HTMX
+    htmx.trigger('#floating-tasks', 'load');
+    
+    // Mise à jour de l'énergie
+    updateEnergyDisplay();
+    
+    // Suggestions intelligentes
+    generateSmartSuggestions();
+}
+
+// Gestion du drag & drop
+function handleTaskDragStart(event) {
+    draggedElement = event.target;
+    event.target.classList.add('dragging');
+    
+    // Données pour le transfer
+    event.dataTransfer.setData('text/plain', event.target.dataset.id);
+    event.dataTransfer.effectAllowed = 'move';
+    
+    // Highlighting des zones de drop compatibles
+    highlightCompatibleDropZones(event.target);
+    
+    // Accessibilité
+    event.target.setAttribute('aria-grabbed', 'true');
+    announceToScreenReader('Déplacement de ' + event.target.querySelector('.task-title').textContent);
+}
+
+function handleTaskDragEnd(event) {
+    event.target.classList.remove('dragging');
+    event.target.setAttribute('aria-grabbed', 'false');
+    
+    // Suppression du highlighting
+    document.querySelectorAll('.drop-zone').forEach(zone => {
+        zone.classList.remove('compatible', 'incompatible');
+    });
+}
+
+function handleDragOver(event) {
+    event.preventDefault();
+    event.currentTarget.classList.add('drag-over');
+    event.dataTransfer.dropEffect = 'move';
+}
+
+function handleDragLeave(event) {
+    event.currentTarget.classList.remove('drag-over');
+}
+
+function handleDrop(event) {
+    event.preventDefault();
+    event.currentTarget.classList.remove('drag-over');
+    
+    const taskId = event.dataTransfer.getData('text/plain');
+    const timeSlot = event.currentTarget.dataset.timeSlot;
+    
+    if (draggedElement && taskId) {
+        moveTaskToTimeSlot(draggedElement, timeSlot);
+    }
+}
+
+// Déplacement d'une tâche vers un créneau horaire
+function moveTaskToTimeSlot(taskElement, timeSlot) {
+    const taskId = taskElement.dataset.id;
+    const duration = parseInt(taskElement.dataset.duration);
+    const energyRequired = parseInt(taskElement.dataset.energy);
+    
+    // Vérification de compatibilité
+    if (!checkTimeSlotCompatibility(timeSlot, duration, energyRequired)) {
+        showAlert('Ce créneau ne convient pas à cette tâche. Essayez un autre moment.', 'warning');
+        return;
+    }
+    
+    // Création de l'élément planifié
+    const scheduledElement = createScheduledElement(taskElement, timeSlot);
+    
+    // Ajout dans la grille
+    const dropZone = document.querySelector(`[data-time-slot="${timeSlot}"]`);
+    dropZone.innerHTML = '';
+    dropZone.appendChild(scheduledElement);
+    
+    // Suppression de la sidebar
+    taskElement.remove();
+    
+    // Mise à jour côté serveur
+    updateTaskSchedule(taskId, timeSlot);
+    
+    // Feedback utilisateur
+    showAlert(`Tâche "${taskElement.querySelector('.task-title').textContent}" planifiée à ${timeSlot}`, 'success');
+    
+    // Régénération des suggestions
+    generateSmartSuggestions();
+    
+    // Annonce pour l'accessibilité
+    announceToScreenReader(`Tâche planifiée à ${timeSlot}`);
+}
+
+// Vérification de compatibilité d'un créneau
+function checkTimeSlotCompatibility(timeSlot, duration, energyRequired) {
+    const hour = parseInt(timeSlot.split(':')[0]);
+    
+    // Vérification de l'énergie disponible selon la période
+    const periodEnergy = getPeriodEnergy(hour);
+    if (energyRequired > periodEnergy + 1) {
+        return false;
+    }
+    
+    // Vérification de disponibilité
+    const endTime = calculateEndTime(timeSlot, duration);
+    return checkTimeSlotAvailable(timeSlot, endTime);
+}
+
+function getPeriodEnergy(hour) {
+    if (hour >= 6 && hour < 12) return 3; // Matin
+    if (hour >= 12 && hour < 18) return 4; // Après-midi
+    if (hour >= 18 && hour < 22) return 2; // Soirée
+    return 1; // Nuit
+}
+
+function calculateEndTime(startTime, durationMinutes) {
+    const [hours, minutes] = startTime.split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes + durationMinutes;
+    const endHours = Math.floor(totalMinutes / 60);
+    const endMins = totalMinutes % 60;
+    return `${endHours.toString().padStart(2, '0')}:${endMins.toString().padStart(2, '0')}`;
+}
+
+function checkTimeSlotAvailable(startTime, endTime) {
+    // Vérification que le créneau n'est pas déjà occupé
+    const startHour = parseInt(startTime.split(':')[0]);
+    const endHour = parseInt(endTime.split(':')[0]);
+    
+    for (let hour = startHour; hour <= endHour; hour++) {
+        const existingElement = document.querySelector(`[data-hour="${hour}"] .schedule-element`);
+        if (existingElement) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Création d'un élément planifié
+function createScheduledElement(taskElement, timeSlot) {
+    const duration = parseInt(taskElement.dataset.duration);
+    const endTime = calculateEndTime(timeSlot, duration);
+    
+    const element = document.createElement('div');
+    element.className = 'schedule-element floating placed';
+    element.dataset.id = taskElement.dataset.id;
+    element.draggable = true;
+    element.setAttribute('tabindex', '0');
+    element.setAttribute('role', 'button');
+    
+    element.innerHTML = `
+        <div class="element-header">
+            <h3 class="element-title">${taskElement.querySelector('.task-title').textContent}</h3>
+            <div class="element-time">${timeSlot} - ${endTime}</div>
+        </div>
+        <div class="element-details">
+            <div class="element-duration">⏱️ ${duration} min</div>
+            <div class="element-priority ${taskElement.querySelector('.task-priority').className}">
+                ${taskElement.querySelector('.task-priority').textContent}
+            </div>
+            <div class="element-sensory">
+                ${taskElement.querySelector('.task-sensory').innerHTML}
+            </div>
+        </div>
+        <button class="element-action-btn" onclick="removeFromSchedule('${taskElement.dataset.id}')" aria-label="Retirer du planning">❌</button>
+    `;
+    
+    // Event listeners pour le drag & drop
+    element.addEventListener('dragstart', handleScheduledDragStart);
+    element.addEventListener('dragend', handleScheduledDragEnd);
+    
+    return element;
+}
+
+// Drag & drop pour éléments planifiés
+function handleScheduledDragStart(event) {
+    draggedElement = event.target;
+    event.target.classList.add('dragging');
+    event.dataTransfer.setData('text/plain', event.target.dataset.id);
+    event.dataTransfer.effectAllowed = 'move';
+}
+
+function handleScheduledDragEnd(event) {
+    event.target.classList.remove('dragging');
+}
+
+// Highlighting des zones compatibles
+function highlightCompatibleDropZones(taskElement) {
+    const duration = parseInt(taskElement.dataset.duration);
+    const energyRequired = parseInt(taskElement.dataset.energy);
+    
+    document.querySelectorAll('.drop-zone').forEach(zone => {
+        const timeSlot = zone.dataset.timeSlot;
+        if (checkTimeSlotCompatibility(timeSlot, duration, energyRequired)) {
+            zone.classList.add('compatible');
+        } else {
+            zone.classList.add('incompatible');
+        }
+    });
+}
+
+// Navigation clavier pour l'accessibilité
+function setupKeyboardNavigation() {
+    document.addEventListener('keydown', function(event) {
+        if (keyboardDragMode) {
+            handleKeyboardDragNavigation(event);
+        }
+    });
+    
+    // Support des tâches flottantes
+    document.querySelectorAll('.floating-task').forEach(task => {
+        task.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                startKeyboardDrag(this);
+            }
+        });
+    });
+}
+
+function startKeyboardDrag(taskElement) {
+    keyboardDragMode = true;
+    currentKeyboardTarget = taskElement;
+    
+    // Highlighting des zones compatibles
+    highlightCompatibleDropZones(taskElement);
+    
+    // Focus sur la première zone compatible
+    const firstCompatible = document.querySelector('.drop-zone.compatible');
+    if (firstCompatible) {
+        firstCompatible.classList.add('keyboard-focus');
+        firstCompatible.focus();
+    }
+    
+    announceToScreenReader('Mode déplacement activé. Utilisez les flèches pour naviguer, Entrée pour placer, Échap pour annuler.');
+}
+
+function handleKeyboardDragNavigation(event) {
+    const currentFocus = document.querySelector('.drop-zone.keyboard-focus');
+    if (!currentFocus) return;
+    
+    let nextFocus = null;
+    
+    switch(event.key) {
+        case 'ArrowDown':
+            nextFocus = getNextDropZone(currentFocus, 'down');
+            break;
+        case 'ArrowUp':
+            nextFocus = getNextDropZone(currentFocus, 'up');
+            break;
+        case 'Enter':
+        case ' ':
+            event.preventDefault();
+            if (currentFocus.classList.contains('compatible')) {
+                moveTaskToTimeSlot(currentKeyboardTarget, currentFocus.dataset.timeSlot);
+            }
+            endKeyboardDrag();
+            break;
+        case 'Escape':
+            endKeyboardDrag();
+            break;
+        default:
+            return;
+    }
+    
+    if (nextFocus) {
+        event.preventDefault();
+        currentFocus.classList.remove('keyboard-focus');
+        nextFocus.classList.add('keyboard-focus');
+        nextFocus.focus();
+    }
+}
+
+function getNextDropZone(current, direction) {
+    const dropZones = Array.from(document.querySelectorAll('.drop-zone.compatible'));
+    const currentIndex = dropZones.indexOf(current);
+    
+    if (direction === 'down') {
+        return dropZones[currentIndex + 1] || dropZones[0];
+    } else {
+        return dropZones[currentIndex - 1] || dropZones[dropZones.length - 1];
+    }
+}
+
+function endKeyboardDrag() {
+    keyboardDragMode = false;
+    currentKeyboardTarget = null;
+    
+    document.querySelectorAll('.drop-zone').forEach(zone => {
+        zone.classList.remove('compatible', 'incompatible', 'keyboard-focus');
+    });
+}
+
+// Gestion de l'énergie
+function showEnergyModal() {
+    const modal = document.getElementById('energy-modal');
+    modal.setAttribute('aria-hidden', 'false');
+    modal.style.display = 'flex';
+    modal.querySelector('input[checked]').focus();
+}
+
+function closeEnergyModal() {
+    const modal = document.getElementById('energy-modal');
+    modal.setAttribute('aria-hidden', 'true');
+    modal.style.display = 'none';
+}
+
+function updateEnergy() {
+    const selectedEnergy = document.querySelector('input[name="current_energy"]:checked');
+    if (selectedEnergy) {
+        currentEnergy = parseInt(selectedEnergy.value);
+        updateEnergyDisplay();
+        generateSmartSuggestions();
+        closeEnergyModal();
+        
+        // Mise à jour côté serveur
+        updateUserEnergy(currentEnergy);
+    }
+}
+
+function updateEnergyDisplay() {
+    const energyBars = document.getElementById('daily-energy-bars');
+    const energyText = document.querySelector('.energy-text');
+    const energyAdvice = document.getElementById('energy-advice');
+    
+    // Mise à jour des barres
+    updateEnergyIndicator('daily-energy-bars', currentEnergy, 5);
+    
+    // Texte de niveau
+    const energyLevels = ['', 'Très faible', 'Faible', 'Modérée', 'Élevée', 'Très élevée'];
+    energyText.textContent = `Énergie ${energyLevels[currentEnergy]} (${currentEnergy}/5)`;
+    
+    // Conseils adaptatifs
+    const advice = getEnergyAdvice(currentEnergy);
+    energyAdvice.textContent = advice;
+}
+
+function getEnergyAdvice(energyLevel) {
+    const advice = {
+        1: "Reposez-vous. Concentrez-vous sur les tâches essentielles uniquement.",
+        2: "Énergie limitée. Privilégiez les tâches simples et courtes.",
+        3: "Énergie modérée. Alternez tâches importantes et pauses régulières.",
+        4: "Bonne énergie ! C'est le moment pour les tâches exigeantes.",
+        5: "Excellente forme ! Profitez-en pour tacler les gros projets."
+    };
+    return advice[energyLevel] || advice[3];
+}
+
+// Suggestions intelligentes
+function generateSmartSuggestions() {
+    const suggestionsContainer = document.getElementById('suggestions');
+    const floatingTasks = document.querySelectorAll('.floating-task');
+    const suggestions = [];
+    
+    floatingTasks.forEach(task => {
+        const taskEnergy = parseInt(task.dataset.energy);
+        const taskPriority = task.dataset.priority;
+        const taskDuration = parseInt(task.dataset.duration);
+        
+        // Logique de suggestion basée sur l'énergie et la priorité
+        if (taskPriority === 'urgent') {
+            suggestions.push({
+                task: task,
+                timeSlot: findBestTimeSlot(taskEnergy, taskDuration, true),
+                reason: 'Tâche urgente à traiter en priorité'
+            });
+        } else if (taskEnergy <= currentEnergy) {
+            suggestions.push({
+                task: task,
+                timeSlot: findBestTimeSlot(taskEnergy, taskDuration, false),
+                reason: `Compatible avec votre énergie actuelle (${currentEnergy}/5)`
+            });
+        }
+    });
+    
+    // Affichage des suggestions (limiter à 3)
+    const suggestionsList = suggestions.slice(0, 3).map(suggestion => `
+        <div class="suggestion-item">
+            <div class="suggestion-text">
+                ${suggestion.reason}: "${suggestion.task.querySelector('.task-title').textContent}" 
+                ${suggestion.timeSlot ? `à ${suggestion.timeSlot}` : ''}
+            </div>
+            ${suggestion.timeSlot ? `
+                <button class="suggestion-action" onclick="applySuggestion('${suggestion.task.dataset.id}', '${suggestion.timeSlot}')">
+                    Appliquer
+                </button>
+            ` : ''}
+        </div>
+    `).join('');
+    
+    suggestionsContainer.innerHTML = `
+        <h4>💡 Suggestions</h4>
+        ${suggestionsList || '<div class="no-suggestions">Aucune suggestion pour le moment.</div>'}
+    `;
+}
+
+function findBestTimeSlot(energyRequired, duration, isUrgent) {
+    const currentHour = new Date().getHours();
+    const availableSlots = [];
+    
+    // Parcours des créneaux disponibles
+    for (let hour = Math.max(6, currentHour); hour <= 22; hour++) {
+        const timeSlot = `${hour.toString().padStart(2, '0')}:00`;
+        if (checkTimeSlotCompatibility(timeSlot, duration, energyRequired)) {
+            const periodEnergy = getPeriodEnergy(hour);
+            const score = isUrgent ? 10 : periodEnergy - energyRequired;
+            availableSlots.push({ timeSlot, score });
+        }
+    }
+    
+    // Retourne le meilleur créneau
+    availableSlots.sort((a, b) => b.score - a.score);
+    return availableSlots[0]?.timeSlot || null;
+}
+
+function applySuggestion(taskId, timeSlot) {
+    const taskElement = document.querySelector(`[data-id="${taskId}"]`);
+    if (taskElement) {
+        moveTaskToTimeSlot(taskElement, timeSlot);
+    }
+}
+
+// Fonction manquante : afficher les suggestions de tâches
+function showTaskSuggestions() {
+    generateSmartSuggestions();
+    showAlert('Suggestions mises à jour selon votre énergie actuelle', 'info');
+    
+    // Scroll vers la section suggestions
+    const suggestionsSection = document.getElementById('suggestions');
+    if (suggestionsSection) {
+        suggestionsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+}
+
+// Optimisation automatique
+function optimizeSchedule() {
+    showAlert('Optimisation de votre emploi du temps...', 'info');
+    
+    // Simulation d'optimisation
+    setTimeout(() => {
+        const floatingTasks = Array.from(document.querySelectorAll('.floating-task'));
+        let optimized = 0;
+        
+        floatingTasks.forEach(task => {
+            const energyRequired = parseInt(task.dataset.energy);
+            const duration = parseInt(task.dataset.duration);
+            const bestSlot = findBestTimeSlot(energyRequired, duration, task.dataset.priority === 'urgent');
+            
+            if (bestSlot) {
+                moveTaskToTimeSlot(task, bestSlot);
+                optimized++;
+            }
+        });
+        
+        showAlert(`Optimisation terminée ! ${optimized} tâches ont été planifiées automatiquement.`, 'success');
+    }, 2000);
+}
+
+// Filtrage des tâches
+function filterTasks(filter) {
+    const tasks = document.querySelectorAll('.floating-task');
+    
+    tasks.forEach(task => {
+        let show = false;
+        
+        switch(filter) {
+            case 'all':
+                show = true;
+                break;
+            case 'urgent':
+                show = task.dataset.priority === 'urgent' || task.dataset.priority === 'high';
+                break;
+            case 'today':
+                show = task.querySelector('.task-deadline')?.textContent.includes('Aujourd\'hui') || 
+                       task.querySelector('.task-deadline')?.textContent.includes('Dans 1 jour') ||
+                       !task.querySelector('.task-deadline');
+                break;
+            case 'low-energy':
+                show = parseInt(task.dataset.energy) <= 2;
+                break;
+        }
+        
+        task.style.display = show ? 'block' : 'none';
+    });
+}
+
+// Fonctions utilitaires
+function updateDateDisplay() {
+    const now = new Date();
+    const options = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    };
+    document.querySelector('.date-number').textContent = now.toLocaleDateString('fr-FR', options);
+}
+
+function announceToScreenReader(message) {
+    const announcement = document.createElement('div');
+    announcement.setAttribute('aria-live', 'polite');
+    announcement.setAttribute('aria-atomic', 'true');
+    announcement.className = 'sr-only';
+    announcement.textContent = message;
+    
+    document.body.appendChild(announcement);
+    setTimeout(() => announcement.remove(), 1000);
+}
+
+function loadScheduleData() {
+    // Chargement des données du jour via HTMX
+    htmx.ajax('GET', '/api/schedule/current', {
+        target: '#schedule-grid',
+        swap: 'innerHTML'
+    });
+}
+
+function updateTaskSchedule(taskId, timeSlot) {
+    // Mise à jour côté serveur
+    htmx.ajax('POST', '/api/schedule/update-task', {
+        values: { task_id: taskId, time_slot: timeSlot },
+        target: '#floating-tasks',
+        swap: 'outerHTML'
+    });
+}
+
+function updateUserEnergy(energyLevel) {
+    htmx.ajax('POST', '/api/user/energy', {
+        values: { energy_level: energyLevel }
+    });
+}
+
+function removeFromSchedule(elementId) {
+    const element = document.querySelector(`[data-id="${elementId}"]`);
+    if (element && confirm('Retirer cette tâche du planning ?')) {
+        // Logique de remise en tâche flottante
+        element.remove();
+        htmx.ajax('POST', '/api/schedule/remove-task', {
+            values: { task_id: elementId },
+            target: '#floating-tasks',
+            swap: 'outerHTML'
+        });
+        showAlert('Tâche retirée du planning', 'info');
+    }
+}
+
+function editElement(elementId) {
+    // Redirection vers l'édition
+    window.location.href = `/setup.html?edit=${elementId}`;
+}
+
+// Gestion des vues
+document.querySelectorAll('.view-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelector('.view-btn.active').classList.remove('active');
+        this.classList.add('active');
+        
+        const view = this.dataset.view;
+        if (view === 'week') {
+            // TODO: Implémenter la vue semaine
+            showAlert('Vue semaine en cours de développement', 'info');
+        }
+    });
+});
+</script>

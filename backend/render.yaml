@@ -1,0 +1,43 @@
+# Configuration pour déploiement Render
+services:
+  - type: web
+    name: qfqa-backend
+    env: docker
+    plan: starter # Plan gratuit pour commencer
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: PB_DATA
+        value: /app/data
+      - key: PB_ENCRYPTION_KEY
+        generateValue: true # Render génère automatiquement une clé
+      - key: NETLIFY_URL
+        value: https://qfqa.netlify.app
+      - key: NODE_ENV
+        value: production
+    healthCheckPath: /health
+    
+    # Configuration des volumes pour persistance des données
+    disk:
+      name: qfqa-data
+      mountPath: /app/data
+      sizeGB: 1 # 1GB pour commencer (gratuit)
+
+    # Auto-déploiement depuis Git
+    buildCommand: echo "Building with Docker"
+    startCommand: "./qfqa-backend serve --http=0.0.0.0:$PORT"
+
+databases:
+  # PocketBase utilise SQLite embarquée, pas besoin de base externe
+  # Mais on peut ajouter Redis pour le cache si nécessaire
+  
+envVarGroups:
+  - name: qfqa-config
+    envVars:
+      - key: APP_NAME
+        value: QFQA Backend
+      - key: APP_VERSION
+        value: "1.0.0"
+      - key: LOG_LEVEL
+        value: info

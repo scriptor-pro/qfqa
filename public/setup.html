@@ -1,0 +1,812 @@
+<div class="row">
+    <div class="col-12">
+        <div class="setup-header">
+            <h1 class="p-heading--1">Configuration de votre emploi du temps</h1>
+            <p class="u-text--muted">
+                Définissez vos éléments d'emploi du temps pour personnaliser votre expérience QFQA.
+                Cette étape est cruciale pour adapter l'application à votre neurotype.
+            </p>
+        </div>
+
+        <!-- Étapes de configuration -->
+        <div class="setup-steps" role="tablist" aria-label="Étapes de configuration">
+            <div class="step-indicators">
+                <button class="step-indicator active" role="tab" aria-selected="true" data-step="1" id="tab-elements-fixes">
+                    <span class="step-number">1</span>
+                    <span class="step-title">Éléments fixes</span>
+                </button>
+                <button class="step-indicator" role="tab" aria-selected="false" data-step="2" id="tab-elements-flottants">
+                    <span class="step-number">2</span>
+                    <span class="step-title">Éléments flottants</span>
+                </button>
+                <button class="step-indicator" role="tab" aria-selected="false" data-step="3" id="tab-preferences">
+                    <span class="step-number">3</span>
+                    <span class="step-title">Préférences</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Étape 1: Éléments fixes -->
+        <div class="setup-step active" id="step-1" role="tabpanel" aria-labelledby="tab-elements-fixes">
+            <div class="p-card">
+                <div class="p-card__header">
+                    <h2 class="p-heading--2">📅 Éléments inscrits dans l'espace-temps</h2>
+                    <p>Ces éléments se déroulent à des moments précis (rendez-vous, cours, réunions...)</p>
+                </div>
+                
+                <div class="p-card__content">
+                    <form id="fixed-elements-form" hx-post="/api/schedule/fixed-elements" hx-target="#fixed-elements-response">
+                        <div class="form-group">
+                            <label for="element-name" class="form-label">Nom de l'élément *</label>
+                            <input 
+                                type="text" 
+                                id="element-name" 
+                                name="name" 
+                                class="form-input"
+                                required
+                                placeholder="Ex: Rendez-vous médecin, Cours de yoga..."
+                                aria-describedby="element-name-help"
+                            >
+                            <div class="form-help" id="element-name-help">
+                                Donnez un nom clair à votre activité.
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="element-date" class="form-label">Date *</label>
+                                <input 
+                                    type="date" 
+                                    id="element-date" 
+                                    name="date" 
+                                    class="form-input"
+                                    required
+                                >
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="element-start-time" class="form-label">Heure de début *</label>
+                                <input 
+                                    type="time" 
+                                    id="element-start-time" 
+                                    name="start_time" 
+                                    class="form-input"
+                                    required
+                                >
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="element-duration" class="form-label">Durée (minutes) *</label>
+                                <input 
+                                    type="number" 
+                                    id="element-duration" 
+                                    name="duration" 
+                                    class="form-input"
+                                    required
+                                    min="15"
+                                    max="480"
+                                    step="15"
+                                    placeholder="60"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="element-location" class="form-label">Lieu</label>
+                            <select id="element-location" name="location_type" class="form-input" onchange="toggleTravelEnergy()">
+                                <option value="home">À domicile</option>
+                                <option value="external">À l'extérieur</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="location-details" style="display: none;">
+                            <label for="location-address" class="form-label">Adresse</label>
+                            <input 
+                                type="text" 
+                                id="location-address" 
+                                name="address" 
+                                class="form-input"
+                                placeholder="Adresse du lieu"
+                            >
+                        </div>
+
+                        <!-- Évaluation de l'énergie avec l'échelle sensorielle -->
+                        <div class="form-group" id="travel-energy" style="display: none;">
+                            <label class="form-label">Consommation d'énergie pour le trajet (aller-retour)</label>
+                            <div class="energy-assessment">
+                                <div class="sensory-scales">
+                                    <div class="sensory-scale">
+                                        <label for="travel-audio">🔊 Niveau sonore du trajet</label>
+                                        <select id="travel-audio" name="travel_audio" class="form-input">
+                                            <option value="1">1 - Silence absolu</option>
+                                            <option value="5" selected>5 - Salle calme</option>
+                                            <option value="10">10 - Radio en fond</option>
+                                            <option value="15">15 - Circulation dense</option>
+                                            <option value="20">20 - Carnaval</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="sensory-scale">
+                                        <label for="travel-visual">👁️ Stimulation visuelle</label>
+                                        <select id="travel-visual" name="travel_visual" class="form-input">
+                                            <option value="1">1 - Obscurité</option>
+                                            <option value="5" selected>5 - Éclairage simple</option>
+                                            <option value="10">10 - Couleurs variées</option>
+                                            <option value="15">15 - Environnement très animé</option>
+                                            <option value="20">20 - Néons géants + foule</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="energy-result">
+                                    <div class="energy-indicator">
+                                        <span>Énergie estimée :</span>
+                                        <div class="energy-bars" id="travel-energy-bars">
+                                            <div class="energy-level"></div>
+                                            <div class="energy-level"></div>
+                                            <div class="energy-level"></div>
+                                            <div class="energy-level"></div>
+                                            <div class="energy-level"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Consommation d'énergie de l'activité</label>
+                            <div class="energy-selector" role="radiogroup" aria-labelledby="activity-energy-label">
+                                <div class="energy-options">
+                                    <label class="energy-option">
+                                        <input type="radio" name="activity_energy" value="1" required>
+                                        <span class="energy-visual low">●</span>
+                                        <span>Très faible</span>
+                                    </label>
+                                    <label class="energy-option">
+                                        <input type="radio" name="activity_energy" value="2" required>
+                                        <span class="energy-visual low">●●</span>
+                                        <span>Faible</span>
+                                    </label>
+                                    <label class="energy-option">
+                                        <input type="radio" name="activity_energy" value="3" required>
+                                        <span class="energy-visual medium">●●●</span>
+                                        <span>Moyenne</span>
+                                    </label>
+                                    <label class="energy-option">
+                                        <input type="radio" name="activity_energy" value="4" required>
+                                        <span class="energy-visual high">●●●●</span>
+                                        <span>Élevée</span>
+                                    </label>
+                                    <label class="energy-option">
+                                        <input type="radio" name="activity_energy" value="5" required>
+                                        <span class="energy-visual high">●●●●●</span>
+                                        <span>Très élevée</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="element-notes" class="form-label">Notes (optionnel)</label>
+                            <textarea 
+                                id="element-notes" 
+                                name="notes" 
+                                class="form-input"
+                                rows="3"
+                                placeholder="Préparation particulière, matériel nécessaire..."
+                            ></textarea>
+                        </div>
+
+                        <div id="fixed-elements-response" aria-live="polite" aria-atomic="true"></div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="p-button--positive">
+                                Ajouter cet élément
+                            </button>
+                            <button type="button" class="p-button--base" onclick="clearForm('fixed-elements-form')">
+                                Effacer
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Liste des éléments ajoutés -->
+                    <div class="elements-list" id="fixed-elements-list">
+                        <h3 class="p-heading--4">Éléments ajoutés</h3>
+                        <div class="elements-container" 
+                             hx-get="/api/schedule/fixed-elements" 
+                             hx-trigger="load"
+                             hx-target="this"
+                        >
+                            <div class="loading-placeholder">Chargement des éléments...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-navigation">
+                <button class="p-button--neutral" disabled>Précédent</button>
+                <button class="p-button--positive" onclick="nextStep(2)">
+                    Continuer vers les éléments flottants
+                </button>
+            </div>
+        </div>
+
+        <!-- Étape 2: Éléments flottants -->
+        <div class="setup-step" id="step-2" role="tabpanel" aria-labelledby="tab-elements-flottants">
+            <div class="p-card">
+                <div class="p-card__header">
+                    <h2 class="p-heading--2">🎈 Éléments flottants</h2>
+                    <p>Ces tâches peuvent être déplacées dans votre emploi du temps selon vos besoins et votre énergie.</p>
+                </div>
+                
+                <div class="p-card__content">
+                    <form id="floating-elements-form" hx-post="/api/schedule/floating-elements" hx-target="#floating-elements-response">
+                        <div class="form-group">
+                            <label for="task-name" class="form-label">Nom de la tâche *</label>
+                            <input 
+                                type="text" 
+                                id="task-name" 
+                                name="name" 
+                                class="form-input"
+                                required
+                                placeholder="Ex: Faire les courses, Appeler maman, Ranger le bureau..."
+                            >
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="task-duration" class="form-label">Durée estimée (minutes) *</label>
+                                <input 
+                                    type="number" 
+                                    id="task-duration" 
+                                    name="duration" 
+                                    class="form-input"
+                                    required
+                                    min="5"
+                                    max="240"
+                                    step="5"
+                                    placeholder="30"
+                                >
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="task-priority" class="form-label">Priorité</label>
+                                <select id="task-priority" name="priority" class="form-input">
+                                    <option value="low">Faible</option>
+                                    <option value="medium" selected>Moyenne</option>
+                                    <option value="high">Élevée</option>
+                                    <option value="urgent">Urgente</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="task-deadline" class="form-label">Date limite (optionnel)</label>
+                            <input 
+                                type="date" 
+                                id="task-deadline" 
+                                name="deadline" 
+                                class="form-input"
+                                min=""
+                            >
+                        </div>
+
+                        <!-- Évaluation sensorielle complète pour les tâches -->
+                        <div class="form-group">
+                            <label class="form-label">Évaluation sensorielle de la tâche</label>
+                            <div class="sensory-assessment">
+                                <div class="sensory-grid">
+                                    <div class="sensory-item">
+                                        <label for="task-audio">🔊 Niveau sonore</label>
+                                        <select id="task-audio" name="sensory_audio" class="form-input sensory-input">
+                                            <option value="1">1 - Silence</option>
+                                            <option value="3">3 - Légers bruits</option>
+                                            <option value="5" selected>5 - Ambiance normale</option>
+                                            <option value="10">10 - Environnement bruyant</option>
+                                            <option value="15">15 - Très bruyant</option>
+                                            <option value="20">20 - Extrêmement bruyant</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="sensory-item">
+                                        <label for="task-visual">👁️ Stimulation visuelle</label>
+                                        <select id="task-visual" name="sensory_visual" class="form-input sensory-input">
+                                            <option value="1">1 - Environnement épuré</option>
+                                            <option value="3">3 - Visuel simple</option>
+                                            <option value="5" selected>5 - Stimulation modérée</option>
+                                            <option value="10">10 - Environnement coloré</option>
+                                            <option value="15">15 - Très stimulant</option>
+                                            <option value="20">20 - Surcharge visuelle</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="sensory-item">
+                                        <label for="task-tactile">✋ Contact tactile</label>
+                                        <select id="task-tactile" name="sensory_tactile" class="form-input sensory-input">
+                                            <option value="1">1 - Aucun contact</option>
+                                            <option value="3">3 - Contact léger</option>
+                                            <option value="5" selected>5 - Contact modéré</option>
+                                            <option value="10">10 - Contact fréquent</option>
+                                            <option value="15">15 - Contact intense</option>
+                                            <option value="20">20 - Contact constant</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="sensory-item">
+                                        <label for="task-olfactory">👃 Stimulation olfactive</label>
+                                        <select id="task-olfactory" name="sensory_olfactory" class="form-input sensory-input">
+                                            <option value="1">1 - Aucune odeur</option>
+                                            <option value="3">3 - Odeurs légères</option>
+                                            <option value="5" selected>5 - Odeurs normales</option>
+                                            <option value="10">10 - Odeurs marquées</option>
+                                            <option value="15">15 - Odeurs fortes</option>
+                                            <option value="20">20 - Odeurs intenses</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="sensory-item">
+                                        <label for="task-gustatory">👅 Implication gustative</label>
+                                        <select id="task-gustatory" name="sensory_gustatory" class="form-input sensory-input">
+                                            <option value="1" selected>1 - Aucune</option>
+                                            <option value="3">3 - Légère (boire)</option>
+                                            <option value="5">5 - Modérée (repas)</option>
+                                            <option value="10">10 - Importante (cuisine)</option>
+                                            <option value="15">15 - Intense (dégustation)</option>
+                                            <option value="20">20 - Extrême (tests gustatifs)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="energy-calculation">
+                                    <div class="energy-result-display">
+                                        <span>Charge sensorielle totale :</span>
+                                        <div class="sensory-total" id="sensory-total">
+                                            <div class="total-score">0/100</div>
+                                            <div class="total-bars">
+                                                <div class="total-bar"></div>
+                                                <div class="total-bar"></div>
+                                                <div class="total-bar"></div>
+                                                <div class="total-bar"></div>
+                                                <div class="total-bar"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="task-category" class="form-label">Catégorie</label>
+                            <select id="task-category" name="category" class="form-input">
+                                <option value="personal">Personnel</option>
+                                <option value="work">Travail</option>
+                                <option value="health">Santé</option>
+                                <option value="social">Social</option>
+                                <option value="household">Ménage</option>
+                                <option value="creative">Créatif</option>
+                                <option value="learning">Apprentissage</option>
+                                <option value="exercise">Exercice</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="task-notes" class="form-label">Notes (optionnel)</label>
+                            <textarea 
+                                id="task-notes" 
+                                name="notes" 
+                                class="form-input"
+                                rows="2"
+                                placeholder="Contexte, matériel nécessaire, conseils personnels..."
+                            ></textarea>
+                        </div>
+
+                        <div id="floating-elements-response" aria-live="polite" aria-atomic="true"></div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="p-button--positive">
+                                Ajouter cette tâche
+                            </button>
+                            <button type="button" class="p-button--base" onclick="clearForm('floating-elements-form')">
+                                Effacer
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Liste des tâches ajoutées -->
+                    <div class="elements-list" id="floating-elements-list">
+                        <h3 class="p-heading--4">Tâches ajoutées</h3>
+                        <div class="elements-container" 
+                             hx-get="/api/schedule/floating-elements" 
+                             hx-trigger="load"
+                             hx-target="this"
+                        >
+                            <div class="loading-placeholder">Chargement des tâches...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-navigation">
+                <button class="p-button--neutral" onclick="previousStep(1)">Précédent</button>
+                <button class="p-button--positive" onclick="nextStep(3)">
+                    Continuer vers les préférences
+                </button>
+            </div>
+        </div>
+
+        <!-- Étape 3: Préférences -->
+        <div class="setup-step" id="step-3" role="tabpanel" aria-labelledby="tab-preferences">
+            <div class="p-card">
+                <div class="p-card__header">
+                    <h2 class="p-heading--2">⚙️ Préférences personnelles</h2>
+                    <p>Personnalisez QFQA selon votre neurotype et vos préférences.</p>
+                </div>
+                
+                <div class="p-card__content">
+                    <form id="preferences-form" hx-post="/api/user/preferences" hx-target="#preferences-response">
+                        <!-- Gestion de l'énergie -->
+                        <fieldset class="form-group">
+                            <legend class="form-label">Gestion de votre énergie quotidienne</legend>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="energy-morning" class="form-label">Énergie matinale (6h-12h)</label>
+                                    <select id="energy-morning" name="energy_morning" class="form-input">
+                                        <option value="1">Très faible</option>
+                                        <option value="2">Faible</option>
+                                        <option value="3" selected>Moyenne</option>
+                                        <option value="4">Élevée</option>
+                                        <option value="5">Très élevée</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="energy-afternoon" class="form-label">Énergie après-midi (12h-18h)</label>
+                                    <select id="energy-afternoon" name="energy_afternoon" class="form-input">
+                                        <option value="1">Très faible</option>
+                                        <option value="2">Faible</option>
+                                        <option value="3" selected>Moyenne</option>
+                                        <option value="4">Élevée</option>
+                                        <option value="5">Très élevée</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="energy-evening" class="form-label">Énergie soirée (18h-22h)</label>
+                                    <select id="energy-evening" name="energy_evening" class="form-input">
+                                        <option value="1">Très faible</option>
+                                        <option value="2">Faible</option>
+                                        <option value="3" selected>Moyenne</option>
+                                        <option value="4">Élevée</option>
+                                        <option value="5">Très élevée</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <!-- Sensibilités particulières -->
+                        <fieldset class="form-group">
+                            <legend class="form-label">Vos sensibilités particulières</legend>
+                            
+                            <div class="sensitivity-grid">
+                                <div class="p-checkbox">
+                                    <input type="checkbox" id="sensitive-sound" name="sensitivities" value="sound" class="p-checkbox__input">
+                                    <label for="sensitive-sound" class="p-checkbox__label">
+                                        🔊 Sensible aux bruits
+                                    </label>
+                                </div>
+                                
+                                <div class="p-checkbox">
+                                    <input type="checkbox" id="sensitive-light" name="sensitivities" value="light" class="p-checkbox__input">
+                                    <label for="sensitive-light" class="p-checkbox__label">
+                                        💡 Sensible à la lumière
+                                    </label>
+                                </div>
+                                
+                                <div class="p-checkbox">
+                                    <input type="checkbox" id="sensitive-touch" name="sensitivities" value="touch" class="p-checkbox__input">
+                                    <label for="sensitive-touch" class="p-checkbox__label">
+                                        ✋ Sensible au toucher
+                                    </label>
+                                </div>
+                                
+                                <div class="p-checkbox">
+                                    <input type="checkbox" id="sensitive-crowd" name="sensitivities" value="crowd" class="p-checkbox__input">
+                                    <label for="sensitive-crowd" class="p-checkbox__label">
+                                        👥 Sensible à la foule
+                                    </label>
+                                </div>
+                                
+                                <div class="p-checkbox">
+                                    <input type="checkbox" id="sensitive-smells" name="sensitivities" value="smells" class="p-checkbox__input">
+                                    <label for="sensitive-smells" class="p-checkbox__label">
+                                        👃 Sensible aux odeurs
+                                    </label>
+                                </div>
+                                
+                                <div class="p-checkbox">
+                                    <input type="checkbox" id="sensitive-change" name="sensitivities" value="change" class="p-checkbox__input">
+                                    <label for="sensitive-change" class="p-checkbox__label">
+                                        🔄 Sensible aux changements
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <!-- Stratégies d'adaptation -->
+                        <fieldset class="form-group">
+                            <legend class="form-label">Vos stratégies d'adaptation préférées</legend>
+                            
+                            <div class="strategy-grid">
+                                <div class="p-checkbox">
+                                    <input type="checkbox" id="strategy-breaks" name="strategies" value="breaks" class="p-checkbox__input">
+                                    <label for="strategy-breaks" class="p-checkbox__label">
+                                        ⏸️ Pauses régulières
+                                    </label>
+                                </div>
+                                
+                                <div class="p-checkbox">
+                                    <input type="checkbox" id="strategy-music" name="strategies" value="music" class="p-checkbox__input">
+                                    <label for="strategy-music" class="p-checkbox__label">
+                                        🎵 Musique/casque
+                                    </label>
+                                </div>
+                                
+                                <div class="p-checkbox">
+                                    <input type="checkbox" id="strategy-fidget" name="strategies" value="fidget" class="p-checkbox__input">
+                                    <label for="strategy-fidget" class="p-checkbox__label">
+                                        🤹 Objets fidget
+                                    </label>
+                                </div>
+                                
+                                <div class="p-checkbox">
+                                    <input type="checkbox" id="strategy-routine" name="strategies" value="routine" class="p-checkbox__input">
+                                    <label for="strategy-routine" class="p-checkbox__label">
+                                        📋 Routines structurées
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <!-- Préférences d'interface -->
+                        <fieldset class="form-group">
+                            <legend class="form-label">Préférences d'interface</legend>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="theme-preference" class="form-label">Thème préféré</label>
+                                    <select id="theme-preference" name="theme" class="form-input">
+                                        <option value="auto">Automatique (selon l'appareil)</option>
+                                        <option value="light">Clair</option>
+                                        <option value="dark">Sombre</option>
+                                        <option value="high-contrast">Contraste élevé</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="notification-level" class="form-label">Niveau de notifications</label>
+                                    <select id="notification-level" name="notifications" class="form-input">
+                                        <option value="minimal">Minimal</option>
+                                        <option value="normal" selected>Normal</option>
+                                        <option value="detailed">Détaillé</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="p-checkbox">
+                                <input type="checkbox" id="reduced-motion" name="reduced_motion" class="p-checkbox__input">
+                                <label for="reduced-motion" class="p-checkbox__label">
+                                    Réduire les animations
+                                </label>
+                            </div>
+                        </fieldset>
+
+                        <div id="preferences-response" aria-live="polite" aria-atomic="true"></div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="p-button--positive">
+                                Enregistrer mes préférences
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="step-navigation">
+                <button class="p-button--neutral" onclick="previousStep(2)">Précédent</button>
+                <button class="p-button--positive" 
+                        hx-get="/schedule.html" 
+                        hx-target="#main-content"
+                        hx-push-url="true">
+                    Terminer et accéder à mon emploi du temps
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Navigation entre les étapes
+function nextStep(stepNumber) {
+    const currentStep = document.querySelector('.setup-step.active');
+    const currentIndicator = document.querySelector('.step-indicator.active');
+    
+    if (currentStep) currentStep.classList.remove('active');
+    if (currentIndicator) {
+        currentIndicator.classList.remove('active');
+        currentIndicator.setAttribute('aria-selected', 'false');
+    }
+    
+    // Afficher la nouvelle étape
+    document.getElementById(`step-${stepNumber}`).classList.add('active');
+    document.querySelector(`[data-step="${stepNumber}"]`).classList.add('active');
+    document.querySelector(`[data-step="${stepNumber}"]`).setAttribute('aria-selected', 'true');
+    
+    // Scroll vers le haut
+    window.scrollTo(0, 0);
+}
+
+function previousStep(stepNumber) {
+    nextStep(stepNumber);
+}
+
+// Navigation par clic sur les indicateurs
+document.querySelectorAll('.step-indicator').forEach(indicator => {
+    indicator.addEventListener('click', function() {
+        const stepNumber = parseInt(this.dataset.step);
+        nextStep(stepNumber);
+    });
+});
+
+// Gestion des lieux extérieurs
+function toggleTravelEnergy() {
+    const locationType = document.getElementById('element-location').value;
+    const locationDetails = document.getElementById('location-details');
+    const travelEnergy = document.getElementById('travel-energy');
+    
+    if (locationType === 'external') {
+        locationDetails.style.display = 'block';
+        travelEnergy.style.display = 'block';
+    } else {
+        locationDetails.style.display = 'none';
+        travelEnergy.style.display = 'none';
+    }
+}
+
+// Calcul de l'énergie de trajet
+function updateTravelEnergy() {
+    const audioInput = document.getElementById('travel-audio');
+    const visualInput = document.getElementById('travel-visual');
+    
+    if (!audioInput || !visualInput) return;
+    
+    const audioLevel = parseInt(audioInput.value) || 5;
+    const visualLevel = parseInt(visualInput.value) || 5;
+    
+    // Calcul simple : moyenne des niveaux sensoriels
+    const energyLevel = Math.ceil((audioLevel + visualLevel) / 4);
+    
+    updateEnergyIndicator('travel-energy-bars', energyLevel, 5);
+}
+
+// Calcul de la charge sensorielle totale
+function updateSensoryTotal() {
+    const sensoryInputs = document.querySelectorAll('.sensory-input');
+    let total = 0;
+    
+    sensoryInputs.forEach(input => {
+        total += parseInt(input.value);
+    });
+    
+    // Affichage du score
+    const totalScore = document.querySelector('.total-score');
+    const totalBars = document.querySelectorAll('.total-bar');
+    
+    totalScore.textContent = `${total}/100`;
+    
+    // Mise à jour des barres (5 niveaux)
+    const level = Math.ceil(total / 20);
+    totalBars.forEach((bar, index) => {
+        bar.classList.remove('filled', 'low', 'medium', 'high');
+        
+        if (index < level) {
+            bar.classList.add('filled');
+            
+            if (total <= 20) bar.classList.add('low');
+            else if (total <= 60) bar.classList.add('medium');
+            else bar.classList.add('high');
+        }
+    });
+}
+
+// Mise à jour des indicateurs d'énergie
+function updateEnergyIndicator(containerId, level, maxLevel) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    const bars = container.querySelectorAll('.energy-level');
+    
+    bars.forEach((bar, index) => {
+        bar.classList.remove('filled', 'low', 'medium');
+        
+        if (index < level) {
+            bar.classList.add('filled');
+            
+            if (level <= maxLevel * 0.4) {
+                bar.classList.add('low');
+            } else if (level <= maxLevel * 0.7) {
+                bar.classList.add('medium');
+            }
+        }
+    });
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Écoute des changements sur les échelles sensorielles
+    const sensoryInputs = document.querySelectorAll('.sensory-input');
+    sensoryInputs.forEach(input => {
+        input.addEventListener('change', updateSensoryTotal);
+    });
+    
+    // Écoute des changements pour l'énergie de trajet
+    const travelAudio = document.getElementById('travel-audio');
+    const travelVisual = document.getElementById('travel-visual');
+    
+    if (travelAudio) travelAudio.addEventListener('change', updateTravelEnergy);
+    if (travelVisual) travelVisual.addEventListener('change', updateTravelEnergy);
+    
+    // Date minimum pour les échéances
+    const today = new Date().toISOString().split('T')[0];
+    const deadlineInput = document.getElementById('task-deadline');
+    if (deadlineInput) deadlineInput.setAttribute('min', today);
+    
+    // Calculs initiaux
+    updateSensoryTotal();
+    updateTravelEnergy();
+});
+
+// Nettoyage des formulaires
+function clearForm(formId) {
+    const form = document.getElementById(formId);
+    form.reset();
+    
+    // Réinitialiser les calculs
+    if (formId === 'floating-elements-form') {
+        updateSensoryTotal();
+    }
+    if (formId === 'fixed-elements-form') {
+        updateTravelEnergy();
+        toggleTravelEnergy();
+    }
+}
+
+// Gestion des soumissions de formulaires (optimisée)
+function initializeFormHandlers() {
+    const forms = document.querySelectorAll('form[id$="-form"]');
+    
+    forms.forEach(form => {
+        form.addEventListener('htmx:afterRequest', handleFormSuccess);
+    });
+}
+
+function handleFormSuccess(event) {
+    if (!event.detail.successful) return;
+    
+    const formId = this.id;
+    const listSelectors = {
+        'fixed-elements-form': '#fixed-elements-list .elements-container',
+        'floating-elements-form': '#floating-elements-list .elements-container'
+    };
+    
+    const listContainer = document.querySelector(listSelectors[formId]);
+    if (listContainer && typeof htmx !== 'undefined') {
+        htmx.trigger(listContainer, 'load');
+    }
+    
+    clearForm(formId);
+}
+
+// Initialiser au chargement
+document.addEventListener('DOMContentLoaded', initializeFormHandlers);
+</script>

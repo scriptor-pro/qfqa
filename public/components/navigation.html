@@ -1,0 +1,121 @@
+<!-- Navigation responsive WCAG 2.1 AA compliant pour QFQA -->
+<nav class="qfqa-nav" role="navigation" aria-label="Navigation principale">
+  <div class="nav-container">
+    <!-- Logo et titre -->
+    <div class="nav-brand">
+      <a href="/" class="nav-logo" hx-get="/" hx-target="#main-content" hx-push-url="true" aria-label="QFQA - Retour à l'accueil">
+        <span class="logo-icon" aria-hidden="true">🧠</span>
+        <span class="logo-text">QFQA</span>
+      </a>
+    </div>
+
+    <!-- Bouton menu mobile -->
+    <button class="nav-toggle" 
+            type="button" 
+            aria-controls="nav-menu" 
+            aria-expanded="false" 
+            aria-label="Ouvrir le menu de navigation">
+      <span class="hamburger" aria-hidden="true">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </span>
+      <span class="sr-only">Menu</span>
+    </button>
+
+    <!-- Menu principal -->
+    <div class="nav-menu" id="nav-menu">
+      <ul class="nav-list" role="menubar">
+        <!-- Emploi du temps -->
+        <li class="nav-item" role="none">
+          <a href="/schedule-optimized.html" 
+             class="nav-link" 
+             role="menuitem"
+             hx-get="/schedule-optimized.html" 
+             hx-target="#main-content" 
+             hx-push-url="true"
+             aria-describedby="schedule-desc">
+            <span class="nav-icon" aria-hidden="true">📅</span>
+            <span class="nav-text">Mon emploi du temps</span>
+          </a>
+          <span class="sr-only" id="schedule-desc">Gérer votre planning quotidien</span>
+        </li>
+
+        <!-- Configuration -->
+        <li class="nav-item" role="none">
+          <a href="/setup.html" 
+             class="nav-link" 
+             role="menuitem"
+             hx-get="/setup.html" 
+             hx-target="#main-content" 
+             hx-push-url="true"
+             aria-describedby="setup-desc">
+            <span class="nav-icon" aria-hidden="true">⚙️</span>
+            <span class="nav-text">Configuration</span>
+          </a>
+          <span class="sr-only" id="setup-desc">Personnaliser vos préférences</span>
+        </li>
+
+        <!-- Profil (si connecté) -->
+        <li class="nav-item nav-item--auth" role="none" style="display: none;">
+          <a href="/profile.html" 
+             class="nav-link" 
+             role="menuitem"
+             hx-get="/profile.html" 
+             hx-target="#main-content" 
+             hx-push-url="true"
+             aria-describedby="profile-desc">
+            <span class="nav-icon" aria-hidden="true">👤</span>
+            <span class="nav-text">Mon profil</span>
+          </a>
+          <span class="sr-only" id="profile-desc">Gérer votre compte utilisateur</span>
+        </li>
+      </ul>
+
+      <!-- Actions utilisateur -->
+      <div class="nav-actions">
+        <!-- Mode non connecté -->
+        <div class="nav-auth nav-auth--guest">
+          <a href="/login.html" 
+             class="nav-btn nav-btn--secondary" 
+             hx-get="/login.html" 
+             hx-target="#main-content" 
+             hx-push-url="true">
+            <span class="nav-icon" aria-hidden="true">🔑</span>
+            <span>Se connecter</span>
+          </a>
+          <a href="/register.html" 
+             class="nav-btn nav-btn--primary" 
+             hx-get="/register.html" 
+             hx-target="#main-content" 
+             hx-push-url="true">
+            <span class="nav-icon" aria-hidden="true">✨</span>
+            <span>S'inscrire</span>
+          </a>
+        </div>
+
+        <!-- Mode connecté -->
+        <div class="nav-auth nav-auth--user" style="display: none;">
+          <div class="nav-user-info">
+            <span class="nav-user-name">Utilisateur</span>
+            <div class="nav-energy-quick">
+              <span class="energy-icon" aria-hidden="true">⚡</span>
+              <span class="energy-level-text" aria-live="polite">Énergie: Bonne</span>
+            </div>
+          </div>
+          <button class="nav-btn nav-btn--secondary" 
+                  type="button" 
+                  hx-post="/api/auth/logout" 
+                  hx-target="body" 
+                  hx-confirm="Êtes-vous sûr de vouloir vous déconnecter ?">
+            <span class="nav-icon" aria-hidden="true">🚪</span>
+            <span>Déconnexion</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Overlay mobile -->
+    <div class="nav-overlay" aria-hidden="true"></div>
+  </div>
+</nav>

@@ -18,12 +18,24 @@ Le but de ce projet est de mettre au point un web app d'emploi du temps pour per
 
 ## Choix technologique
 
-Le choix d'une solution technique (back-end, front-end ou full stack) sera fait selon les critères suivants :
+Front-end
 
-* Est-ce que c'est la solution technologiquement la plus simple ? 
-* Est-ce que c'est la solution technologiquement la plus robuste ?
-* Est-ce que c'est la solution technologiquement la plus légére ? 
-* Est-ce que cette solution respecte la vie privée de l'utilisateur (RGPD) etc?
+Framework : HTMX 
+
+HTML + CSS (avec vanilla.css déjà en place) 
+
+Accessibilité native : respecter WCAG 2.1 AA avec HTML sémantique et variables CSS.
+
+Back-end
+
+PocketBase (choix minimaliste)
+
+Authentification intégrée (magic link, mot de passe).
+
+Base de données embarquée (SQLite, très simple).
+
+API REST et temps réel prêts à l’emploi.
+
 
 ## Parties
 
@@ -41,6 +53,8 @@ Le formulaire d'inscription demande
 * le neurotype de l'utilisateur (TDAH, autiste, les deux)
 
 Après réussite de l'inscription -> Peupler l'emploi du temps
+
+
 
 ### Connection 
 

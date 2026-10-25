@@ -1,0 +1,111 @@
+Échelle sensorielle complète (20 niveaux, 5 sens)
+
+🔊 Ouïe (auditif)
+1. Silence absolu
+2. Souffle de son propre corps
+3. Goutte d’eau qui tombe
+4. Tic-tac d’une horloge
+5. Écho d’une chapelle vide
+6. Bruit discret d’un crayon sur papier
+7. Chuchotements d’une bibliothèque
+8. Salle de classe quasi vide
+9. Conversations basses d’un café
+10. Radio en fond sonore discret
+11. Brouhaha d’un restaurant animé
+12. Terrasse de café avec circulation proche
+13. Appels de vendeurs au marché
+14. Rue commerçante bondée
+15. Annonces d’une gare + foule dense
+16. Parc d’attractions : musiques croisées
+17. Feu d’artifice (claquements explosifs)
+18. Concert de rock assourdissant
+19. Stade avec vuvuzelas
+20. Carnaval de Rio (chars, feux d’artifice, foule en transe)
+
+👁️ Vue (visuel)
+1. Obscurité totale
+2. Pénombre, une bougie
+3. Lueur diffuse derrière un rideau
+4. Chambre avec lampe de chevet
+5. Salle calme, mobilier simple
+6. Salle de classe claire, tableau et bancs
+7. Café minimaliste, déco sobre
+8. Bibliothèque lumineuse
+9. Restaurant animé avec couleurs chaudes
+10. Marché aux couleurs variées
+11. Rue commerçante animée
+12. Gare avec foule et panneaux lumineux
+13. Carrefour urbain bondé
+14. Parc d’attractions (manèges colorés)
+15. Feu d’artifice nocturne
+16. Concert : jeux de lumières
+17. Discothèque : lasers, stroboscopes
+18. Stade : drapeaux, écrans géants
+19. Show de Las Vegas : hologrammes
+20. Tokyo de nuit : néons géants + foule compacte
+
+👃 Odorat (olfactif)
+1. Aucun parfum
+2. Air neutre, stérile
+3. Odeur légère de poussière
+4. Papier, vieux livres
+5. Craie, bois
+6. Café filtre discret
+7. Café + viennoiseries
+8. Odeur d’herbe fraîche
+9. Cuisine familiale simple
+10. Restaurant avec plats multiples
+11. Épices douces (cannelle, cardamome)
+12. Marché de fruits et légumes
+13. Marché de fritures et grillades
+14. Marché aux épices orientales
+15. Odeurs de gare (gazole + nourriture)
+16. Parc d’attractions (sucre, friture, popcorn)
+17. Concert (tabac, bière renversée)
+18. Stade (fast-food + corps)
+19. Quartier de street-food asiatique
+20. Marché humide de poissons, viandes et épices entassés
+
+✋ Toucher (tactile)
+1. Air immobile, pas de contact
+2. Sol lisse, froid
+3. Papier sous les doigts
+4. Bois d’une chaise
+5. Tissu d’un vêtement simple
+6. Tasse chaude tenue en main
+7. Poignée de porte métallique froide
+8. Accoudoir d’un fauteuil confortable
+9. Vaisselle en céramique d’un café
+10. Table serrée, contacts légers
+11. Frôlement au marché
+12. Sac qui cogne dans la foule
+13. Coups d’épaule dans une gare bondée
+14. Vibrations du sol au passage d’un train
+15. Attraction : secousses rapides
+16. Concert : basses qui vibrent dans le corps
+17. Foule compacte, chaleur croissante
+18. Compression dans un stade bondé
+19. Pèlerinage : densité humaine maximale
+20. Foule en transe (carnaval, rave géante)
+
+👅 Goût (gustatif)
+1. Eau neutre
+2. Air sec sans goût
+3. Eau légèrement minéralisée
+4. Goût de poussière, papier
+5. Hostie fade, farine crue
+6. Goût de craie / bois
+7. Biscuit sec
+8. Café noir simple
+9. Café + sucre
+10. Repas simple, salé
+11. Repas varié, assaisonné
+12. Plat épicé modéré
+13. Street food épicée et grasse
+14. Snacks sucrés / salés mélangés
+15. Bonbons chimiques, sodas
+16. Fast food gras
+17. Bière et alcool
+18. Concert : bière tiède + chips
+19. Stade : mélange sueur, alcool, fast food
+20. Buffet mondial : sucré, salé, acide, amer, umami en simultané
